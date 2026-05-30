@@ -2,28 +2,11 @@
 <html>
 <head>
     <title>My 3D Model</title>
-    <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
-    <style>
-        body { margin: 0; }
-        iframe { width: 100vw; height: 100vh; border: none; }
-    </style>
 </head>
-<body>
-    <iframe id="api-frame" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src=""></iframe>
-
-    <script>
-        var urlid = 'pKCSB'; 
-        var iframe = document.getElementById('api-frame');
-        var client = new Sketchfab(iframe);
-        client.init(urlid, {
-            success: function(api) {
-                api.start();
-            },
-            error: function() {
-                console.log('Error');
-            }
-        });
-    </script>
+<body style="margin: 0; padding: 0;">
+    <div class="sketchfab-embed-wrapper">
+        <iframe title="Zombie" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/pKCSB/embed"> </iframe>
+    </div>
 </body>
 </html>
 
