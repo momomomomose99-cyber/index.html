@@ -1,12 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
-    <title>My 3D Model</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض الموديل ثلاثي الأبعاد</title>
+    <style>
+        /* إعدادات لتغطية كامل الشاشة ومنع ظهور أشرطة التمرير */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        /* تنسيق الحاوية التي تحتوي على الموديل */
+        .sketchfab-embed-wrapper {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* جعل إطار الموديل يملأ المساحة بالكامل */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+    </style>
 </head>
-<body style="margin: 0; padding: 0;">
+<body>
+
     <div class="sketchfab-embed-wrapper">
-        <iframe title="Zombie" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/pKCSB/embed"> </iframe>
+        <iframe 
+            title="Zombie Model" 
+            frameborder="0" 
+            allowfullscreen 
+            mozallowfullscreen="true" 
+            webkitallowfullscreen="true" 
+            allow="autoplay; fullscreen; xr-spatial-tracking" 
+            xr-spatial-tracking 
+            execution-while-out-of-viewport 
+            execution-while-not-rendered 
+            web-share 
+            src="https://sketchfab.com/models/pKCSB/embed">
+        </iframe>
     </div>
+
 </body>
 </html>
-
