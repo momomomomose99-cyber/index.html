@@ -1,83 +1,47 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrix System - Continuous</title>
-    <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: black; }
-        canvas { display: block; }
-        #start-screen { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: black; display: flex; align-items: center; justify-content: center; 
-            z-index: 20; cursor: pointer; 
-        }
-        button { 
-            padding: 20px 50px; background: transparent; border: 3px solid #0F0; 
-            color: #0F0; font-size: 30px; font-weight: bold; font-family: monospace; 
-            border-radius: 10px; cursor: pointer;
-        }
-    </style>
-</head>
-<body>
+import * as THREE from 'three';
 
-    <div id="start-screen">
-        <button id="startBtn">START MATRIX</button>
-    </div>
-
-    <canvas id="matrix"></canvas>
+/**
+ * دالة إنشاء المسار المتعرج كما طلبت
+ */
+function createWanderingPath(start, dir, length, segments, jitterScale, endPoint) {
+    let pts = [start.clone()];
+    let curr = start.clone();
+    let cDir = dir.clone().normalize();
     
-    <audio id="bgMusic" loop>
-        <source src="Song.mp3" type="audio/mpeg">
-    </audio>
+    for (let i = 0; i < segments; i++) {
+        cDir.x += (Math.random() - 0.5) * jitterScale;
+        cDir.y += (Math.random() - 0.5) * jitterScale;
+        cDir.z += (Math.random() - 0.5) * jitterScale;
+        cDir.normalize();
+        
+        curr = curr.clone().add(cDir.clone().multiplyScalar(length / segments));
+        pts.push(curr);
+    }
+    
+    if (endPoint) {
+        // تعديل نقطة النهاية بإضافة إزاحة كما في كودك
+        const approach = endPoint.clone().add(new THREE.Vector3(-1.5, 0, 0));
+        pts[pts.length - 1] = approach;
+        pts.push(endPoint.clone());
+    }
+    
+    return new THREE.CatmullRomCurve3(pts);
+}
 
-    <script>
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-        const music = document.getElementById('bgMusic');
-        const startBtn = document.getElementById('startBtn');
-        const startScreen = document.getElementById('start-screen');
+// --- مثال على كيفية استخدام الدالة لرسم المسار في المشهد ---
 
-        canvas.height = window.innerHeight;
-        canvas.width = window.innerWidth;
+const startPoint = new THREE.Vector3(0, 0, 0);
+const direction = new THREE.Vector3(0, 1, 0); // الاتجاه للأعلى
+const endPoint = new THREE.Vector3(0, 10, 0);
 
-        const fontSize = 16;
-        const columns = Math.floor(canvas.width / fontSize);
-        // مصفوفة لتخزين مواقع الـ Y لكل عمود
-        let drops = Array(columns).fill(1);
+// استدعاء الدالة
+const curve = createWanderingPath(startPoint, direction, 10, 20, 0.5, endPoint);
 
-        function draw() {
-            // نضع خلفية سوداء شفافة جداً لخلق أثر التلاشي
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = "#0F0";
-            ctx.font = fontSize + "px monospace";
+// تحويل المسار إلى هندسة (Geometry) لرؤيته
+const points = curve.getPoints(50);
+const geometry = new THREE.BufferGeometry().setFromPoints(points);
+const material = new THREE.LineBasicMaterial({ color: 0xff00ff });
+const curveObject = new THREE.Line(geometry, material);
 
-            for (let i = 0; i < drops.length; i++) {
-                // اختيار رقم عشوائي
-                const text = Math.floor(Math.random() * 2).toString();
-                
-                // رسم الرقم
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                // إعادة تعيين العمود عشوائياً عند وصوله لأسفل الشاشة
-                // هذا يجعل الأرقام "لازقة" ببعضها ومستمرة بدون انتظار
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-
-                // زيادة الموقع للعمود
-                drops[i]++;
-            }
-        }
-
-        startBtn.addEventListener('click', () => {
-            music.play();
-            startScreen.style.display = 'none';
-            // سرعة التحديث 30 ميللي ثانية لتعطي تدفقاً أنعم
-            setInterval(draw, 30); 
-        });
-    </script>
-</body>
-</html>
+// أضف curveObject إلى المشهد الخاص بك scene.add(curveObject);
+        
