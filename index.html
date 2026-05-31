@@ -2,140 +2,57 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zombie Warfare - Full Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zombie Survival Live</title>
     <style>
-        body, html { margin: 0; padding: 0; overflow: hidden; background: #000; touch-action: none; font-family: sans-serif; }
-        #game-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        .hud { pointer-events: auto; position: absolute; }
-        #status-panel { top: 20px; left: 20px; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 10px; color: #fff; font-size: 20px; }
-        #joystick { bottom: 60px; left: 60px; width: 150px; height: 150px; border-radius: 50%; border: 4px solid #fff; background: rgba(255,255,255,0.1); }
-        #fire-btn { bottom: 60px; right: 60px; width: 150px; height: 150px; border-radius: 50%; border: 4px solid #fff; background: radial-gradient(#ff0000, #440000); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 24px; }
+        body { margin: 0; overflow: hidden; background: #000; }
+        #ui { position: absolute; top: 10px; left: 10px; color: white; font-size: 20px; z-index: 10; }
+        #fireBtn { position: absolute; bottom: 50px; right: 50px; width: 100px; height: 100px; background: red; border-radius: 50%; color: white; text-align: center; line-height: 100px; z-index: 10; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
-    <div id="game-container"></div>
-    <div id="ui-layer">
-        <div id="status-panel" class="hud">القتلى: <span id="score">0</span> | القلوب: <span id="hearts">❤❤❤</span></div>
-        <div id="joystick" class="hud"></div>
-        <div id="fire-btn" class="hud">FIRE</div>
-    </div>
+    <div id="ui">القتلى: <span id="killCount">0</span></div>
+    <div id="fireBtn">FIRE</div>
 
     <script>
-        /**
-         * المحرك الرئيسي للعبة
-         * نظام كامل لإدارة الكائنات، الفيزياء، والتحكم
-         */
-        class GameEngine {
-            constructor() {
-                // 1. نظام الرندرة (Graphics)
-                this.scene = new THREE.Scene();
-                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
-                this.renderer = new THREE.WebGLRenderer({antialias: true});
-                this.renderer.setSize(window.innerWidth, window.innerHeight);
-                document.getElementById('game-container').appendChild(this.renderer.domElement);
-                
-                // 2. إدارة البيانات (State Management)
-                this.zombies = [];
-                this.score = 0;
-                this.health = 3;
-                this.isLoaded = false;
-                
-                // 3. التهيئة الأولية
-                this.setupWorld();
-                this.setupControls();
-                this.loadZombie();
-                this.animate();
-            }
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-            setupWorld() {
-                this.scene.background = new THREE.Color(0x87CEEB);
-                this.scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-                const light = new THREE.DirectionalLight(0xffffff, 1.2);
-                light.position.set(50, 100, 50);
-                this.scene.add(light);
-                
-                const ground = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), new THREE.MeshLambertMaterial({color: 0x228B22}));
-                ground.rotation.x = -Math.PI/2;
-                this.scene.add(ground);
-                
-                this.camera.position.set(0, 1.7, 0);
-            }
-
-            setupControls() {
-                // نظام دوران الكاميرا
-                window.addEventListener('touchmove', (e) => {
-                    const x = (e.touches[0].clientX / window.innerWidth - 0.5) * 2;
-                    this.camera.rotation.y = -x * Math.PI;
-                }, {passive: false});
-
-                // زر الطلق
-                document.getElementById('fire-btn').addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    this.handleShoot();
-                });
-            }
-
-            loadZombie() {
-                const loader = new THREE.GLTFLoader();
-                loader.load('zombie.glb', (gltf) => {
-                    this.zombieTemplate = gltf.scene;
-                    this.isLoaded = true;
-                    setInterval(() => this.spawnZombie(), 2000);
-                });
-            }
-
-            spawnZombie() {
-                if(!this.isLoaded) return;
-                const z = this.zombieTemplate.clone();
-                z.position.set((Math.random()-0.5)*100, 0, -100);
-                this.scene.add(z);
-                this.zombies.push(z);
-            }
-
-            handleShoot() {
-                if(this.zombies.length > 0) {
-                    this.scene.remove(this.zombies[0]);
-                    this.zombies.shift();
-                    this.score++;
-                    document.getElementById('score').innerText = this.score;
-                }
-            }
-
-            animate() {
-                requestAnimationFrame(() => this.animate());
-                
-                // تحديث منطق الزومبي
-                this.zombies.forEach((z, index) => {
-                    z.position.z += 0.4;
-                    // فحص إذا اقترب الزومبي جداً
-                    if(z.position.z > 2) {
-                        this.scene.remove(z);
-                        this.zombies.splice(index, 1);
-                        this.damagePlayer();
-                    }
-                });
-
-                this.renderer.render(this.scene, this.camera);
-            }
-
-            damagePlayer() {
-                this.health--;
-                let hStr = "";
-                for(let i=0; i<this.health; i++) hStr += "❤";
-                document.getElementById('hearts').innerText = hStr;
-                if(this.health <= 0) {
-                    alert("Game Over! Score: " + this.score);
-                    location.reload();
-                }
-            }
+        // إنشاء شكل "زومبي" بسيط من الكود (مكعب أخضر) لضمان الحركة
+        function createZombie() {
+            const geo = new THREE.BoxGeometry(1, 2, 1);
+            const mat = new THREE.MeshBasicMaterial({color: 0x00ff00});
+            const zombie = new THREE.Mesh(geo, mat);
+            zombie.position.set((Math.random()-0.5)*10, 0, -20);
+            scene.add(zombie);
+            return zombie;
         }
 
-        // تشغيل المحرك
-        new GameEngine();
+        let zombies = [];
+        for(let i=0; i<5; i++) zombies.push(createZombie());
+
+        // تحكم بسيط
+        document.getElementById('fireBtn').onclick = () => {
+            if(zombies.length > 0) {
+                scene.remove(zombies[0]);
+                zombies.shift();
+                document.getElementById('killCount').innerText = parseInt(document.getElementById('killCount').innerText) + 1;
+            }
+        };
+
+        camera.position.z = 5;
+        function animate() {
+            requestAnimationFrame(animate);
+            zombies.forEach(z => z.position.z += 0.05); // الزومبي يتحركون
+            renderer.render(scene, camera);
+        }
+        animate();
     </script>
 </body>
 </html>
+
