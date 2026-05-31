@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neon Energy Lightning</title>
+<meta charset="utf-8">
+<title>Energy Lightning</title>
 
 <style>
 body{
-    margin:0;
-    overflow:hidden;
-    background:black;
+margin:0;
+overflow:hidden;
+background:black;
 }
 canvas{
-    display:block;
+display:block;
 }
 </style>
+
 </head>
 <body>
 
@@ -32,7 +32,7 @@ window.innerWidth/window.innerHeight,
 1000
 );
 
-camera.position.z = 18;
+camera.position.z = 16;
 
 const renderer = new THREE.WebGLRenderer({
 antialias:true
@@ -43,95 +43,124 @@ window.innerWidth,
 window.innerHeight
 );
 
-document.body.appendChild(renderer.domElement);
-
-/* LIGHT */
-
-scene.add(
-new THREE.AmbientLight(
-0xffffff,
-2
-)
+document.body.appendChild(
+renderer.domElement
 );
 
 /* CORE */
 
 const core = new THREE.Mesh(
-new THREE.SphereGeometry(1.2,32,32),
+
+new THREE.SphereGeometry(
+1.1,
+32,
+32
+),
+
 new THREE.MeshBasicMaterial({
-color:0xff88ff
+color:0xff66ff
 })
+
 );
 
 scene.add(core);
 
-/* GLOW */
+/* OUTER GLOW */
 
 const glow = new THREE.Mesh(
-new THREE.SphereGeometry(1.8,32,32),
+
+new THREE.SphereGeometry(
+1.6,
+32,
+32
+),
+
 new THREE.MeshBasicMaterial({
-color:0xffccff,
+color:0xffffff,
 transparent:true,
-opacity:0.25
+opacity:0.15
 })
+
 );
 
 scene.add(glow);
 
 /* COLORS */
 
-const colors = [
-0x00ffff,
-0x00ff88,
-0xffff00,
+const COLORS = [
+
 0xff66ff,
+0xffff66,
+0x66ffff,
+0x66ff66,
 0xffffff
+
 ];
 
-const bolts = [];
+/* LIGHTNING */
+
+let bolts = [];
 
 function createBolt(){
 
-const points = [];
+const pts = [];
 
-let pos = new THREE.Vector3(0,0,0);
+let current =
+new THREE.Vector3(0,0,0);
 
-points.push(pos.clone());
+pts.push(current.clone());
 
-const dir = new THREE.Vector3(
+const dir =
+new THREE.Vector3(
 (Math.random()-0.5),
 (Math.random()-0.5),
 (Math.random()-0.5)
 ).normalize();
 
-let current = pos.clone();
-
-for(let i=0;i<15;i++){
+for(let i=0;i<18;i++){
 
 current = current.clone().add(
 
 new THREE.Vector3(
-dir.x + (Math.random()-0.5)*1.2,
-dir.y + (Math.random()-0.5)*1.2,
-dir.z + (Math.random()-0.5)*1.2
+
+dir.x +
+(Math.random()-0.5)*1.2,
+
+dir.y +
+(Math.random()-0.5)*1.2,
+
+dir.z +
+(Math.random()-0.5)*1.2
+
 )
 
 );
 
-points.push(current.clone());
+pts.push(
+current.clone()
+);
 
 }
 
+const curve =
+new THREE.CatmullRomCurve3(
+pts
+);
+
 const geometry =
-new THREE.BufferGeometry().setFromPoints(points);
+new THREE.BufferGeometry().setFromPoints(
+
+curve.getPoints(80)
+
+);
 
 const material =
 new THREE.LineBasicMaterial({
 
 color:
-colors[
+COLORS[
 Math.floor(
-Math.random()*colors.length
+Math.random()*COLORS.length
 )
 ]
 
@@ -149,9 +178,25 @@ bolts.push(line);
 
 }
 
-for(let i=0;i<45;i++){
+/* BUILD MANY */
+
+function rebuildBolts(){
+
+bolts.forEach(b=>{
+scene.remove(b);
+});
+
+bolts = [];
+
+for(let i=0;i<40;i++){
+
 createBolt();
+
 }
+
+}
+
+rebuildBolts();
 
 /* PARTICLES */
 
@@ -161,14 +206,14 @@ for(let i=0;i<120;i++){
 
 const p = new THREE.Mesh(
 
-new THREE.SphereGeometry(0.05),
+new THREE.SphereGeometry(0.04),
 
 new THREE.MeshBasicMaterial({
 
 color:
-colors[
+COLORS[
 Math.floor(
-Math.random()*colors.length
+Math.random()*COLORS.length
 )
 ]
 
@@ -178,9 +223,9 @@ Math.random()*colors.length
 
 p.position.set(
 
-(Math.random()-0.5)*6,
-(Math.random()-0.5)*6,
-(Math.random()-0.5)*6
+(Math.random()-0.5)*4,
+(Math.random()-0.5)*4,
+(Math.random()-0.5)*4
 
 );
 
@@ -190,34 +235,45 @@ particles.push(p);
 
 }
 
-/* ANIMATE */
+/* ANIMATION */
+
+setInterval(()=>{
+
+rebuildBolts();
+
+},180);
 
 function animate(){
 
-requestAnimationFrame(animate);
+requestAnimationFrame(
+animate
+);
 
 core.rotation.y += 0.01;
 core.rotation.x += 0.005;
 
-glow.scale.x =
-1 + Math.sin(Date.now()*0.005)*0.08;
+const pulse =
+1 +
+Math.sin(
+Date.now()*0.008
+)*0.15;
 
-glow.scale.y =
-1 + Math.sin(Date.now()*0.005)*0.08;
-
-glow.scale.z =
-1 + Math.sin(Date.now()*0.005)*0.08;
+glow.scale.set(
+pulse,
+pulse,
+pulse
+);
 
 particles.forEach(p=>{
 
 p.position.x +=
-(Math.random()-0.5)*0.03;
+(Math.random()-0.5)*0.02;
 
 p.position.y +=
-(Math.random()-0.5)*0.03;
+(Math.random()-0.5)*0.02;
 
 p.position.z +=
-(Math.random()-0.5)*0.03;
+(Math.random()-0.5)*0.02;
 
 });
 
@@ -230,12 +286,13 @@ camera
 
 animate();
 
-/* RESIZE */
-
-window.addEventListener("resize",()=>{
+window.addEventListener(
+"resize",
+()=>{
 
 camera.aspect =
-window.innerWidth/window.innerHeight;
+window.innerWidth /
+window.innerHeight;
 
 camera.updateProjectionMatrix();
 
@@ -244,7 +301,8 @@ window.innerWidth,
 window.innerHeight
 );
 
-});
+}
+);
 
 </script>
 
