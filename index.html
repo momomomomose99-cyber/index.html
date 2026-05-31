@@ -3,26 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>3D Zombie Viewer</title>
+    <title>Zombie Survival Game</title>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
-        .sketchfab-embed-wrapper { width: 100%; height: 100%; }
-        iframe { width: 100%; height: 100%; border: none; }
+        body { margin: 0; overflow: hidden; background: #000; font-family: Arial; }
+        #ui { position: absolute; top: 10px; left: 10px; color: white; font-size: 20px; z-index: 10; }
+        #shootBtn { position: absolute; bottom: 50px; right: 50px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,0,0,0.8); border: 3px solid white; color: white; display: flex; align-items: center; justify-content: center; z-index: 10; font-weight: bold; }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
+    <div id="ui">القتلى: <span id="score">0</span></div>
+    <div id="shootBtn">طلق</div>
 
-    <div class="sketchfab-embed-wrapper">
-        <iframe title="zombie_smoke_mummy_character_12_mb" 
-                frameborder="0" 
-                allowfullscreen 
-                mozallowfullscreen="true" 
-                webkitallowfullscreen="true" 
-                allow="autoplay; fullscreen; xr-spatial-tracking" 
-                src="https://sketchfab.com/models/b8d8d2f005c84c61b0563f392bb86042/embed?autostart=1"> 
-        </iframe>
-    </div>
+    <script>
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
+        scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 10, 5);
+        scene.add(light);
+
+        const floor = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshBasicMaterial({color: 0x228B22}));
+        floor.rotation.x = -Math.PI / 2;
+        scene.add(floor);
+
+        const loader = new THREE.GLTFLoader();
+        let zombieModel;
+        let zombies = [];
+        
+        // رابط ملفك المباشر
+        loader.load('https://raw.githubusercontent.com/momomomomose99-cyber/momomomomose99-cyber.github.io/main/zombie.glb', (gltf) => {
+            zombieModel = gltf.scene;
+        });
+
+        function spawnZombie() {
+            if(!zombieModel) return;
+            const zombie = zombieModel.clone();
+            zombie.position.set(Math.random()*20-10, 0, -25);
+            scene.add(zombie);
+            zombies.push(zombie);
+        }
+        setInterval(spawnZombie, 3000);
+
+        document.getElementById('shootBtn').onclick = () => {
+            if(zombies.length > 0) {
+                scene.remove(zombies[0]);
+                zombies.shift();
+                document.getElementById('score').innerText = parseInt(document.getElementById('score').innerText) + 1;
+            }
+        };
+
+        camera.position.set(0, 1.6, 5);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            // تحريك الزومبي نحو الكاميرا
+            zombies.forEach(z => z.position.z += 0.05);
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
 </body>
 </html>
-
