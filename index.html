@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrix System</title>
+    <title>Matrix System - Continuous</title>
     <style>
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: black; }
         canvas { display: block; }
@@ -22,7 +22,7 @@
 <body>
 
     <div id="start-screen">
-        <button id="startBtn">PRESS</button>
+        <button id="startBtn">START MATRIX</button>
     </div>
 
     <canvas id="matrix"></canvas>
@@ -40,40 +40,43 @@
 
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        const fontSize = 20;
+        const fontSize = 16;
         const columns = Math.floor(canvas.width / fontSize);
-        let pos = Array(columns).fill(0);
+        // مصفوفة لتخزين مواقع الـ Y لكل عمود
+        let drops = Array(columns).fill(1);
 
         function draw() {
-            // مسح الجزء العلوي فقط أو تظليل طفيف للحفاظ على اللون الأسود
-            ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+            // نضع خلفية سوداء شفافة جداً لخلق أثر التلاشي
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             ctx.fillStyle = "#0F0";
             ctx.font = fontSize + "px monospace";
 
-            let allFinished = true;
-            for (let i = 0; i < columns; i++) {
-                if (pos[i] * fontSize < canvas.height) {
-                    const text = Math.random() > 0.5 ? "1" : "0";
-                    ctx.fillText(text, i * fontSize, pos[i] * fontSize);
-                    pos[i]++;
-                    allFinished = false;
-                }
-            }
+            for (let i = 0; i < drops.length; i++) {
+                // اختيار رقم عشوائي
+                const text = Math.floor(Math.random() * 2).toString();
+                
+                // رسم الرقم
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-            if (allFinished) {
-                pos.fill(0);
+                // إعادة تعيين العمود عشوائياً عند وصوله لأسفل الشاشة
+                // هذا يجعل الأرقام "لازقة" ببعضها ومستمرة بدون انتظار
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                // زيادة الموقع للعمود
+                drops[i]++;
             }
         }
 
         startBtn.addEventListener('click', () => {
             music.play();
             startScreen.style.display = 'none';
-            setInterval(draw, 50); 
+            // سرعة التحديث 30 ميللي ثانية لتعطي تدفقاً أنعم
+            setInterval(draw, 30); 
         });
     </script>
 </body>
