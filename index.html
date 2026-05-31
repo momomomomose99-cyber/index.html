@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrix Digital</title>
+    <title>Matrix Vertical</title>
     <style>
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: black; }
         canvas { display: block; }
-        #overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #0F0; font-family: 'Courier New', monospace; z-index: 10; }
-        button { padding: 15px 30px; cursor: pointer; background: transparent; border: 2px solid #0F0; color: #0F0; font-size: 20px; font-weight: bold; border-radius: 10px; transition: 0.3s; }
+        #overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 10; }
+        button { padding: 20px 50px; cursor: pointer; background: transparent; border: 3px solid #0F0; color: #0F0; font-size: 25px; font-weight: bold; font-family: 'Courier New', monospace; border-radius: 15px; transition: 0.3s; }
         button:hover { background: #0F0; color: black; }
     </style>
 </head>
@@ -16,11 +16,9 @@
 
     <canvas id="matrix"></canvas>
     <div id="overlay">
-        <h1>البيانات الرقمية</h1>
-        <button id="playBtn">بدء التجربة</button>
+        <button id="playBtn">PRESS</button>
     </div>
     
-    <!-- ربط ملف الموسيقى (تأكد من وجود الملف بنفس الاسم) -->
     <audio id="bgMusic" loop>
         <source src="Song.mp3" type="audio/mpeg">
     </audio>
@@ -34,32 +32,35 @@
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
 
-        const chars = "01";
-        const fontSize = 16;
+        const fontSize = 20;
         const columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
 
         function draw() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            // تأثير التلاشي البطيء
+            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
             ctx.fillStyle = "#0F0";
             ctx.font = fontSize + "px monospace";
 
             for (let i = 0; i < drops.length; i++) {
-                const text = chars.charAt(Math.floor(Math.random() * chars.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                // رسم الخط العمودي
+                ctx.fillText("|", i * fontSize, drops[i] * fontSize);
+                
+                // إعادة الضبط بشكل عشوائي لجعلها تبدو كأنها تتساقط
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.99) drops[i] = 0;
                 drops[i]++;
             }
         }
-        setInterval(draw, 33);
+        
+        // زيادة الرقم هنا يبطئ الحركة (جعلناه 100 بدلاً من 33)
+        setInterval(draw, 100);
 
-        // تشغيل الموسيقى عند الضغط
         playBtn.addEventListener('click', () => {
             music.play();
-            playBtn.style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
         });
     </script>
 </body>
 </html>
-
