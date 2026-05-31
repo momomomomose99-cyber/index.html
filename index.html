@@ -1,3 +1,36 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix System</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: black; }
+        canvas { display: block; }
+        #start-screen { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: black; display: flex; align-items: center; justify-content: center; 
+            z-index: 20; cursor: pointer; 
+        }
+        button { 
+            padding: 20px 50px; background: transparent; border: 3px solid #0F0; 
+            color: #0F0; font-size: 30px; font-weight: bold; font-family: monospace; 
+            border-radius: 10px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen">
+        <button id="startBtn">PRESS</button>
+    </div>
+
+    <canvas id="matrix"></canvas>
+    
+    <audio id="bgMusic" loop>
+        <source src="Song.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
@@ -7,15 +40,16 @@
 
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         const fontSize = 20;
         const columns = Math.floor(canvas.width / fontSize);
-        // نبدأ من الصفر للجميع ليتحركوا ككتلة واحدة
         let pos = Array(columns).fill(0);
 
         function draw() {
-            // نغطي الشاشة بخلفية شبه شفافة ليعطي تأثير الحركة
-            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+            // مسح الجزء العلوي فقط أو تظليل طفيف للحفاظ على اللون الأسود
+            ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             ctx.fillStyle = "#0F0";
@@ -23,18 +57,14 @@
 
             let allFinished = true;
             for (let i = 0; i < columns; i++) {
-                // نرسم الرقم
-                const text = Math.random() > 0.5 ? "1" : "0";
-                ctx.fillText(text, i * fontSize, pos[i] * fontSize);
-                
-                // تحريك العمود للأسفل
                 if (pos[i] * fontSize < canvas.height) {
+                    const text = Math.random() > 0.5 ? "1" : "0";
+                    ctx.fillText(text, i * fontSize, pos[i] * fontSize);
                     pos[i]++;
                     allFinished = false;
                 }
             }
 
-            // إذا وصلت كل الأرقام للأسفل، نبدأ "جولة" جديدة من الأعلى
             if (allFinished) {
                 pos.fill(0);
             }
@@ -43,8 +73,8 @@
         startBtn.addEventListener('click', () => {
             music.play();
             startScreen.style.display = 'none';
-            // سرعة الجولة
             setInterval(draw, 50); 
         });
     </script>
-    
+</body>
+</html>
