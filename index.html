@@ -3,68 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zombie Warfare - Final Engine</title>
+    <title>Zombie Survival PRO</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #000; }
-        #fireBtn { position: absolute; bottom: 50px; right: 50px; width: 120px; height: 120px; background: red; border-radius: 50%; color: white; text-align: center; line-height: 120px; z-index: 10; font-weight: bold; font-size: 20px; border: 4px solid #fff; }
-        #stats { position: absolute; top: 20px; left: 20px; color: white; font-size: 25px; font-weight: bold; }
+        body { margin: 0; overflow: hidden; background: #87CEEB; }
+        #stats { position: absolute; top: 20px; left: 20px; color: white; font-size: 24px; font-family: sans-serif; }
+        #fireBtn { position: absolute; bottom: 50px; right: 50px; width: 120px; height: 120px; background: red; border-radius: 50%; border: 4px solid white; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
     <div id="stats">القتلى: 0</div>
     <div id="fireBtn">FIRE</div>
 
     <script>
+        // إعداد المحرك
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x222222);
+        scene.background = new THREE.Color(0x87CEEB);
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // إضاءة قوية جداً لرؤية الموديل
-        scene.add(new THREE.AmbientLight(0xffffff, 2));
-        const dirLight = new THREE.DirectionalLight(0xffffff, 2);
-        dirLight.position.set(5, 5, 5);
-        scene.add(dirLight);
+        // إضاءة بسيطة
+        scene.add(new THREE.AmbientLight(0xffffff, 1));
 
-        let zombies = [];
         let score = 0;
+        let zombies = [];
 
-        const loader = new THREE.GLTFLoader();
-        // تحميل الموديل - إذا لم يظهر، المشكلة في الملف نفسه
-        loader.load('zombie.glb', (gltf) => {
-            const model = gltf.scene;
-            model.scale.set(2, 2, 2); // تكبير الموديل
-            
-            setInterval(() => {
-                const z = model.clone();
-                z.position.set((Math.random()-0.5)*10, 0, -20);
-                scene.add(z);
-                zombies.push(z);
-            }, 2000);
-        }, undefined, (err) => {
-            alert("خطأ: لا يمكن تحميل الملف zombie.glb! تأكد من رفعه بشكل صحيح.");
-        });
+        // إنشاء "زومبي" هندسي (مكعبات ملونة)
+        function spawnZombie() {
+            const geo = new THREE.BoxGeometry(1, 1.5, 1);
+            const mat = new THREE.MeshLambertMaterial({color: 0x00aa00});
+            const zombie = new THREE.Mesh(geo, mat);
+            zombie.position.set((Math.random()-0.5)*10, 0, -20);
+            scene.add(zombie);
+            zombies.push(zombie);
+        }
 
-        document.getElementById('fireBtn').onclick = () => {
+        // رسبنة مستمرة
+        setInterval(spawnZombie, 1500);
+
+        // التحكم
+        document.getElementById('fireBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
             if(zombies.length > 0) {
                 scene.remove(zombies[0]);
                 zombies.shift();
                 score++;
                 document.getElementById('stats').innerText = "القتلى: " + score;
             }
-        };
+        });
 
+        // الحلقة الرئيسية
         camera.position.z = 5;
         function animate() {
             requestAnimationFrame(animate);
-            zombies.forEach(z => z.position.z += 0.1);
+            zombies.forEach(z => {
+                z.position.z += 0.15; // سرعة الزومبي
+            });
             renderer.render(scene, camera);
         }
         animate();
     </script>
 </body>
 </html>
+
