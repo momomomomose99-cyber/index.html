@@ -3,104 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zombie Warfare - Ultimate Edition</title>
+    <title>Zombie Survival Engine - Full Production</title>
     <style>
-        body { margin: 0; padding: 0; overflow: hidden; background: #000; touch-action: none; }
-        #gameUI { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        #stats { position: absolute; top: 20px; left: 20px; color: #fff; font-size: 24px; font-weight: bold; pointer-events: auto; }
-        #joystick { position: absolute; bottom: 50px; left: 50px; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 2px solid white; pointer-events: auto; }
-        #fireBtn { position: absolute; bottom: 50px; right: 50px; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,0,0,0.6); border: 4px solid white; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; pointer-events: auto; }
+        /* CSS المهيكل للعبة */
+        body, html { margin: 0; padding: 0; overflow: hidden; background: #000; touch-action: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #game-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        #status-panel { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 10px; color: #fff; pointer-events: auto; }
+        #joystick { position: absolute; bottom: 80px; left: 80px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.15); border: 4px solid #fff; pointer-events: auto; }
+        #fire-btn { position: absolute; bottom: 80px; right: 80px; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(#ff4444, #880000); border: 4px solid #fff; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-weight: bold; pointer-events: auto; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
-    <div id="gameUI">
-        <div id="stats">القتلى: <span id="killCount">0</span></div>
+    <div id="game-container"></div>
+    <div id="ui-layer">
+        <div id="status-panel">
+            <div>القتلى: <span id="score">0</span></div>
+            <div>الحالة: <span id="health">❤❤❤</span></div>
+        </div>
         <div id="joystick"></div>
-        <div id="fireBtn">FIRE</div>
+        <div id="fire-btn">FIRE</div>
     </div>
 
     <script>
-        // --- إعدادات المحرك ---
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x87CEEB);
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-
-        // الإضاءة الديناميكية
-        const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambient);
-        const sun = new THREE.DirectionalLight(0xffffff, 1);
-        sun.position.set(50, 100, 50);
-        scene.add(sun);
-
-        // الأرضية
-        const ground = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshLambertMaterial({color: 0x228B22}));
-        ground.rotation.x = -Math.PI / 2;
-        scene.add(ground);
-
-        // --- نظام الزومبي ---
-        let zombieTemplate;
-        const activeZombies = [];
-        const loader = new THREE.GLTFLoader();
-        loader.load('https://raw.githubusercontent.com/momomomomose99-cyber/momomomomose99-cyber.github.io/main/zombie.glb', (gltf) => {
-            zombieTemplate = gltf.scene;
-        });
-
-        function createZombie() {
-            if(!zombieTemplate) return;
-            const z = zombieTemplate.clone();
-            z.position.set((Math.random()-0.5)*100, 0, -100);
-            scene.add(z);
-            activeZombies.push(z);
-        }
-        setInterval(createZombie, 2000);
-
-        // --- نظام التحكم والفيزياء ---
-        let score = 0;
-        let lookX = 0;
-
-        window.addEventListener('touchmove', (e) => {
-            const touch = e.touches[0];
-            lookX = (touch.clientX / window.innerWidth - 0.5) * 2;
-            camera.rotation.y = -lookX * Math.PI;
-        });
-
-        document.getElementById('fireBtn').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if(activeZombies.length > 0) {
-                scene.remove(activeZombies[0]);
-                activeZombies.shift();
-                score++;
-                document.getElementById('killCount').innerText = score;
+        /**
+         * محرك اللعبة الأساسي
+         * يقوم هذا الكود بإدارة دورة حياة اللعبة بالكامل
+         */
+        class ZombieEngine {
+            constructor() {
+                this.scene = new THREE.Scene();
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+                this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                document.getElementById('game-container').appendChild(this.renderer.domElement);
+                
+                this.entities = []; // تخزين جميع الزومبي
+                this.score = 0;
+                this.lives = 3;
+                this.isLoaded = false;
+                
+                this.initializeEnvironment();
+                this.initializeControls();
+                this.loadZombieModel();
+                this.runLoop();
             }
-        });
 
-        // --- الحلقة الرئيسية للعبة (Game Loop) ---
-        function update() {
-            requestAnimationFrame(update);
-            
-            // تحديث حركة الزومبي في كل إطار
-            activeZombies.forEach(z => {
-                z.position.z += 0.3; // سرعة الزومبي
-                if(z.position.z > 5) z.position.z = -100; // إعادة التدوير
-            });
+            // إعداد البيئة (الأرضية، الإضاءة)
+            initializeEnvironment() {
+                this.scene.background = new THREE.Color(0x87CEEB);
+                const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+                this.scene.add(ambient);
+                const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+                sun.position.set(100, 100, 100);
+                this.scene.add(sun);
+                const ground = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), new THREE.MeshLambertMaterial({ color: 0x228B22 }));
+                ground.rotation.x = -Math.PI / 2;
+                this.scene.add(ground);
+                this.camera.position.set(0, 1.7, 0);
+            }
 
-            renderer.render(scene, camera);
+            // إدارة المدخلات (اللمس، الحركة)
+            initializeControls() {
+                window.addEventListener('touchmove', (e) => {
+                    const x = e.touches[0].clientX / window.innerWidth - 0.5;
+                    this.camera.rotation.y = -x * Math.PI;
+                }, { passive: false });
+
+                document.getElementById('fire-btn').addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.handleFire();
+                });
+            }
+
+            // تحميل الموديل من GitHub
+            loadZombieModel() {
+                const loader = new THREE.GLTFLoader();
+                loader.load('https://raw.githubusercontent.com/momomomomose99-cyber/momomomomose99-cyber.github.io/main/zombie.glb', (gltf) => {
+                    this.template = gltf.scene;
+                    this.isLoaded = true;
+                    // بدء الرسبنة بعد التحميل
+                    setInterval(() => this.spawn(), 1500);
+                });
+            }
+
+            spawn() {
+                if(!this.isLoaded) return;
+                const z = this.template.clone();
+                z.position.set((Math.random()-0.5)*100, 0, -100);
+                this.scene.add(z);
+                this.entities.push(z);
+            }
+
+            handleFire() {
+                if(this.entities.length > 0) {
+                    const target = this.entities.shift();
+                    this.scene.remove(target);
+                    this.score++;
+                    document.getElementById('score').innerText = this.score;
+                }
+            }
+
+            // حلقة التشغيل الرئيسية (Game Loop)
+            runLoop() {
+                requestAnimationFrame(() => this.runLoop());
+                
+                // تحديث منطق الفيزياء لكل زومبي
+                this.entities.forEach(z => {
+                    z.position.z += 0.4;
+                    if(z.position.z > 5) {
+                        this.triggerDamage();
+                        z.position.z = -150;
+                    }
+                });
+                
+                this.renderer.render(this.scene, this.camera);
+            }
+
+            triggerDamage() {
+                this.lives--;
+                let str = "";
+                for(let i=0; i<this.lives; i++) str += "❤";
+                document.getElementById('health').innerText = str;
+                if(this.lives <= 0) {
+                    alert("لقد خسرت! النتيجة النهائية: " + this.score);
+                    location.reload();
+                }
+            }
         }
 
-        camera.position.set(0, 1.7, 0);
-        update();
-
-        // تحديث الأبعاد عند تدوير الشاشة
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        // تشغيل المحرك
+        new ZombieEngine();
     </script>
 </body>
 </html>
+
