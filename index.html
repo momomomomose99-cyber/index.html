@@ -1,310 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Energy Lightning</title>
-
-<style>
-body{
-margin:0;
-overflow:hidden;
-background:black;
-}
-canvas{
-display:block;
-}
-</style>
-
+    <meta charset="UTF-8">
+    <title>Matrix Neural Animation</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; }
+        canvas { display: block; }
+    </style>
 </head>
 <body>
 
-<script type="module">
-
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js";
-
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000000);
-
-const camera = new THREE.PerspectiveCamera(
-60,
-window.innerWidth/window.innerHeight,
-0.1,
-1000
-);
-
-camera.position.z = 16;
-
-const renderer = new THREE.WebGLRenderer({
-antialias:true
-});
-
-renderer.setSize(
-window.innerWidth,
-window.innerHeight
-);
-
-document.body.appendChild(
-renderer.domElement
-);
-
-/* CORE */
-
-const core = new THREE.Mesh(
-
-new THREE.SphereGeometry(
-1.1,
-32,
-32
-),
-
-new THREE.MeshBasicMaterial({
-color:0xff66ff
-})
-
-);
-
-scene.add(core);
-
-/* OUTER GLOW */
-
-const glow = new THREE.Mesh(
-
-new THREE.SphereGeometry(
-1.6,
-32,
-32
-),
-
-new THREE.MeshBasicMaterial({
-color:0xffffff,
-transparent:true,
-opacity:0.15
-})
-
-);
-
-scene.add(glow);
-
-/* COLORS */
-
-const COLORS = [
-
-0xff66ff,
-0xffff66,
-0x66ffff,
-0x66ff66,
-0xffffff
-
-];
-
-/* LIGHTNING */
-
-let bolts = [];
-
-function createBolt(){
-
-const pts = [];
-
-let current =
-new THREE.Vector3(0,0,0);
-
-pts.push(current.clone());
-
-const dir =
-new THREE.Vector3(
-(Math.random()-0.5),
-(Math.random()-0.5),
-(Math.random()-0.5)
-).normalize();
-
-for(let i=0;i<18;i++){
-
-current = current.clone().add(
-
-new THREE.Vector3(
-
-dir.x +
-(Math.random()-0.5)*1.2,
-
-dir.y +
-(Math.random()-0.5)*1.2,
-
-dir.z +
-(Math.random()-0.5)*1.2
-
-)
-
-);
-
-pts.push(
-current.clone()
-);
-
-}
-
-const curve =
-new THREE.CatmullRomCurve3(
-pts
-);
-
-const geometry =
-new THREE.BufferGeometry().setFromPoints(
-
-curve.getPoints(80)
-
-);
-
-const material =
-new THREE.LineBasicMaterial({
-
-color:
-COLORS[
-Math.floor(
-Math.random()*COLORS.length
-)
-]
-
-});
-
-const line =
-new THREE.Line(
-geometry,
-material
-);
-
-scene.add(line);
-
-bolts.push(line);
-
-}
-
-/* BUILD MANY */
-
-function rebuildBolts(){
-
-bolts.forEach(b=>{
-scene.remove(b);
-});
-
-bolts = [];
-
-for(let i=0;i<40;i++){
-
-createBolt();
-
-}
-
-}
-
-rebuildBolts();
-
-/* PARTICLES */
-
-const particles = [];
-
-for(let i=0;i<120;i++){
-
-const p = new THREE.Mesh(
-
-new THREE.SphereGeometry(0.04),
-
-new THREE.MeshBasicMaterial({
-
-color:
-COLORS[
-Math.floor(
-Math.random()*COLORS.length
-)
-]
-
-})
-
-);
-
-p.position.set(
-
-(Math.random()-0.5)*4,
-(Math.random()-0.5)*4,
-(Math.random()-0.5)*4
-
-);
-
-scene.add(p);
-
-particles.push(p);
-
-}
-
-/* ANIMATION */
-
-setInterval(()=>{
-
-rebuildBolts();
-
-},180);
-
-function animate(){
-
-requestAnimationFrame(
-animate
-);
-
-core.rotation.y += 0.01;
-core.rotation.x += 0.005;
-
-const pulse =
-1 +
-Math.sin(
-Date.now()*0.008
-)*0.15;
-
-glow.scale.set(
-pulse,
-pulse,
-pulse
-);
-
-particles.forEach(p=>{
-
-p.position.x +=
-(Math.random()-0.5)*0.02;
-
-p.position.y +=
-(Math.random()-0.5)*0.02;
-
-p.position.z +=
-(Math.random()-0.5)*0.02;
-
-});
-
-renderer.render(
-scene,
-camera
-);
-
-}
-
-animate();
-
-window.addEventListener(
-"resize",
-()=>{
-
-camera.aspect =
-window.innerWidth /
-window.innerHeight;
-
-camera.updateProjectionMatrix();
-
-renderer.setSize(
-window.innerWidth,
-window.innerHeight
-);
-
-}
-);
-
+<!-- استدعاء Three.js والمكتبات الإضافية -->
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
 </script>
 
+<script type="module">
+    import * as THREE from 'three';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+    // الإعدادات الأساسية
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // إعداد التوهج (Bloom) ليطابق الفيديو
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 2.5, 0.4, 0.85);
+    composer.addPass(bloomPass);
+
+    // الدالة المطلوبة (التي أرفقتها في "1000064926.mp4")
+    function createWanderingPath(start, dir, length, segments, jitterScale, endPoint) {
+        let pts = [start.clone()];
+        let curr = start.clone();
+        let cDir = dir.clone().normalize();
+        for (let i = 0; i < segments; i++) {
+            cDir.x += (Math.random() - 0.5) * jitterScale;
+            cDir.y += (Math.random() - 0.5) * jitterScale;
+            cDir.z += (Math.random() - 0.5) * jitterScale;
+            cDir.normalize();
+            curr = curr.clone().add(cDir.clone().multiplyScalar(length / segments));
+            pts.push(curr);
+        }
+        if (endPoint) {
+            const approach = endPoint.clone().add(new THREE.Vector3(-1.5, 0, 0));
+            pts[pts.length - 1] = approach;
+            pts.push(endPoint.clone());
+        }
+        return new THREE.CatmullRomCurve3(pts);
+    }
+
+    // إنشاء "الليفة" العصبية
+    function createNeuralFiber() {
+        const start = new THREE.Vector3(0, 0, 0);
+        const dir = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+        const end = new THREE.Vector3((Math.random()-0.5)*10, (Math.random()-0.5)*10, (Math.random()-0.5)*10);
+        
+        const curve = createWanderingPath(start, dir, 5, 20, 0.5, end);
+        const geometry = new THREE.TubeGeometry(curve, 30, 0.05, 8, false);
+        
+        // ألوان نيون عشوائية
+        const material = new THREE.MeshBasicMaterial({ 
+            color: new THREE.Color(Math.random(), Math.random(), 1),
+            transparent: true,
+            opacity: 0.8 
+        });
+        
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+        
+        // إزالة العصب بعد فترة ليبقى المشهد متجدداً
+        setTimeout(() => scene.remove(mesh), 5000);
+    }
+
+    // حلقة التحديث
+    camera.position.z = 10;
+    function animate() {
+        requestAnimationFrame(animate);
+        if (Math.random() > 0.95) createNeuralFiber(); // توليد تلقائي
+        composer.render();
+    }
+    animate();
+
+    // استجابة لتغيير حجم الشاشة
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+</script>
 </body>
 </html>
