@@ -2,15 +2,17 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>Zombie Survival Pro</title>
+    <title>Zombie Fix</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #000; }
-        #fireBtn { position: absolute; bottom: 50px; right: 50px; width: 120px; height: 120px; background: red; border-radius: 50%; color: white; text-align: center; line-height: 120px; z-index: 10; font-weight: bold; }
+        body { margin: 0; overflow: hidden; background: #87CEEB; }
+        #stats { position: absolute; top: 10px; left: 10px; color: white; font-size: 20px; }
+        #fireBtn { position: absolute; bottom: 50px; right: 50px; width: 100px; height: 100px; background: red; border-radius: 50%; color: white; text-align: center; line-height: 100px; font-weight: bold; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
+    <div id="stats">القتلى: 0</div>
     <div id="fireBtn">FIRE</div>
 
     <script>
@@ -21,47 +23,38 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // إضاءة مكثفة
-        scene.add(new THREE.AmbientLight(0xffffff, 2));
-        const dirLight = new THREE.DirectionalLight(0xffffff, 2);
-        dirLight.position.set(0, 10, 0);
-        scene.add(dirLight);
-
         let zombieTemplate = null;
+        let score = 0;
+        let zombies = [];
+
+        // تحسين تحميل الموديل
         const loader = new THREE.GLTFLoader();
-        
         loader.load('zombie.glb', (gltf) => {
             zombieTemplate = gltf.scene;
-            // تكبير الموديل في حال كان صغيراً جداً
-            zombieTemplate.scale.set(5, 5, 5); 
-        });
+        }, undefined, (error) => console.error("Error loading model:", error));
 
-        let entities = [];
         function spawn() {
-            let obj;
-            if(zombieTemplate) {
-                obj = zombieTemplate.clone();
-            } else {
-                // شكل احتياطي في حال تأخر الموديل
-                obj = new THREE.Mesh(new THREE.BoxGeometry(1, 2, 1), new THREE.MeshBasicMaterial({color: 0x00ff00}));
-            }
-            obj.position.set((Math.random()-0.5)*10, 0, -20);
-            scene.add(obj);
-            entities.push(obj);
+            if(!zombieTemplate) return; // لا ترسم شيئاً حتى يتحمل الموديل
+            const z = zombieTemplate.clone();
+            z.position.set((Math.random()-0.5)*10, 0, -20);
+            scene.add(z);
+            zombies.push(z);
         }
-        setInterval(spawn, 2000);
+        setInterval(spawn, 3000);
 
         document.getElementById('fireBtn').onclick = () => {
-            if(entities.length > 0) {
-                scene.remove(entities[0]);
-                entities.shift();
+            if(zombies.length > 0) {
+                scene.remove(zombies[0]);
+                zombies.shift();
+                score++;
+                document.getElementById('stats').innerText = "القتلى: " + score;
             }
         };
 
         camera.position.z = 5;
         function animate() {
             requestAnimationFrame(animate);
-            entities.forEach(e => e.position.z += 0.1);
+            zombies.forEach(z => z.position.z += 0.05);
             renderer.render(scene, camera);
         }
         animate();
