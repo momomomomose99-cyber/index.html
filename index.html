@@ -3,71 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zombie Survival Game</title>
+    <title>Zombie Warfare - Ultimate Edition</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #000; font-family: Arial; }
-        #ui { position: absolute; top: 10px; left: 10px; color: white; font-size: 20px; z-index: 10; }
-        #shootBtn { position: absolute; bottom: 50px; right: 50px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,0,0,0.8); border: 3px solid white; color: white; display: flex; align-items: center; justify-content: center; z-index: 10; font-weight: bold; }
+        body { margin: 0; padding: 0; overflow: hidden; background: #000; touch-action: none; }
+        #gameUI { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        #stats { position: absolute; top: 20px; left: 20px; color: #fff; font-size: 24px; font-weight: bold; pointer-events: auto; }
+        #joystick { position: absolute; bottom: 50px; left: 50px; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 2px solid white; pointer-events: auto; }
+        #fireBtn { position: absolute; bottom: 50px; right: 50px; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,0,0,0.6); border: 4px solid white; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; pointer-events: auto; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
-    <div id="ui">القتلى: <span id="score">0</span></div>
-    <div id="shootBtn">طلق</div>
+    <div id="gameUI">
+        <div id="stats">القتلى: <span id="killCount">0</span></div>
+        <div id="joystick"></div>
+        <div id="fireBtn">FIRE</div>
+    </div>
 
     <script>
+        // --- إعدادات المحرك ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x87CEEB);
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({antialias: true});
+        const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(5, 10, 5);
-        scene.add(light);
+        // الإضاءة الديناميكية
+        const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambient);
+        const sun = new THREE.DirectionalLight(0xffffff, 1);
+        sun.position.set(50, 100, 50);
+        scene.add(sun);
 
-        const floor = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshBasicMaterial({color: 0x228B22}));
-        floor.rotation.x = -Math.PI / 2;
-        scene.add(floor);
+        // الأرضية
+        const ground = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshLambertMaterial({color: 0x228B22}));
+        ground.rotation.x = -Math.PI / 2;
+        scene.add(ground);
 
+        // --- نظام الزومبي ---
+        let zombieTemplate;
+        const activeZombies = [];
         const loader = new THREE.GLTFLoader();
-        let zombieModel;
-        let zombies = [];
-        
-        // رابط ملفك المباشر
         loader.load('https://raw.githubusercontent.com/momomomomose99-cyber/momomomomose99-cyber.github.io/main/zombie.glb', (gltf) => {
-            zombieModel = gltf.scene;
+            zombieTemplate = gltf.scene;
         });
 
-        function spawnZombie() {
-            if(!zombieModel) return;
-            const zombie = zombieModel.clone();
-            zombie.position.set(Math.random()*20-10, 0, -25);
-            scene.add(zombie);
-            zombies.push(zombie);
+        function createZombie() {
+            if(!zombieTemplate) return;
+            const z = zombieTemplate.clone();
+            z.position.set((Math.random()-0.5)*100, 0, -100);
+            scene.add(z);
+            activeZombies.push(z);
         }
-        setInterval(spawnZombie, 3000);
+        setInterval(createZombie, 2000);
 
-        document.getElementById('shootBtn').onclick = () => {
-            if(zombies.length > 0) {
-                scene.remove(zombies[0]);
-                zombies.shift();
-                document.getElementById('score').innerText = parseInt(document.getElementById('score').innerText) + 1;
+        // --- نظام التحكم والفيزياء ---
+        let score = 0;
+        let lookX = 0;
+
+        window.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            lookX = (touch.clientX / window.innerWidth - 0.5) * 2;
+            camera.rotation.y = -lookX * Math.PI;
+        });
+
+        document.getElementById('fireBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if(activeZombies.length > 0) {
+                scene.remove(activeZombies[0]);
+                activeZombies.shift();
+                score++;
+                document.getElementById('killCount').innerText = score;
             }
-        };
+        });
 
-        camera.position.set(0, 1.6, 5);
+        // --- الحلقة الرئيسية للعبة (Game Loop) ---
+        function update() {
+            requestAnimationFrame(update);
+            
+            // تحديث حركة الزومبي في كل إطار
+            activeZombies.forEach(z => {
+                z.position.z += 0.3; // سرعة الزومبي
+                if(z.position.z > 5) z.position.z = -100; // إعادة التدوير
+            });
 
-        function animate() {
-            requestAnimationFrame(animate);
-            // تحريك الزومبي نحو الكاميرا
-            zombies.forEach(z => z.position.z += 0.05);
             renderer.render(scene, camera);
         }
-        animate();
+
+        camera.position.set(0, 1.7, 0);
+        update();
+
+        // تحديث الأبعاد عند تدوير الشاشة
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
 </body>
 </html>
