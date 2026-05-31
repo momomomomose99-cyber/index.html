@@ -1,47 +1,252 @@
-import * as THREE from 'three';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon Energy Lightning</title>
 
-/**
- * دالة إنشاء المسار المتعرج كما طلبت
- */
-function createWanderingPath(start, dir, length, segments, jitterScale, endPoint) {
-    let pts = [start.clone()];
-    let curr = start.clone();
-    let cDir = dir.clone().normalize();
-    
-    for (let i = 0; i < segments; i++) {
-        cDir.x += (Math.random() - 0.5) * jitterScale;
-        cDir.y += (Math.random() - 0.5) * jitterScale;
-        cDir.z += (Math.random() - 0.5) * jitterScale;
-        cDir.normalize();
-        
-        curr = curr.clone().add(cDir.clone().multiplyScalar(length / segments));
-        pts.push(curr);
-    }
-    
-    if (endPoint) {
-        // تعديل نقطة النهاية بإضافة إزاحة كما في كودك
-        const approach = endPoint.clone().add(new THREE.Vector3(-1.5, 0, 0));
-        pts[pts.length - 1] = approach;
-        pts.push(endPoint.clone());
-    }
-    
-    return new THREE.CatmullRomCurve3(pts);
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    background:black;
+}
+canvas{
+    display:block;
+}
+</style>
+</head>
+<body>
+
+<script type="module">
+
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js";
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000);
+
+const camera = new THREE.PerspectiveCamera(
+60,
+window.innerWidth/window.innerHeight,
+0.1,
+1000
+);
+
+camera.position.z = 18;
+
+const renderer = new THREE.WebGLRenderer({
+antialias:true
+});
+
+renderer.setSize(
+window.innerWidth,
+window.innerHeight
+);
+
+document.body.appendChild(renderer.domElement);
+
+/* LIGHT */
+
+scene.add(
+new THREE.AmbientLight(
+0xffffff,
+2
+)
+);
+
+/* CORE */
+
+const core = new THREE.Mesh(
+new THREE.SphereGeometry(1.2,32,32),
+new THREE.MeshBasicMaterial({
+color:0xff88ff
+})
+);
+
+scene.add(core);
+
+/* GLOW */
+
+const glow = new THREE.Mesh(
+new THREE.SphereGeometry(1.8,32,32),
+new THREE.MeshBasicMaterial({
+color:0xffccff,
+transparent:true,
+opacity:0.25
+})
+);
+
+scene.add(glow);
+
+/* COLORS */
+
+const colors = [
+0x00ffff,
+0x00ff88,
+0xffff00,
+0xff66ff,
+0xffffff
+];
+
+const bolts = [];
+
+function createBolt(){
+
+const points = [];
+
+let pos = new THREE.Vector3(0,0,0);
+
+points.push(pos.clone());
+
+const dir = new THREE.Vector3(
+(Math.random()-0.5),
+(Math.random()-0.5),
+(Math.random()-0.5)
+).normalize();
+
+let current = pos.clone();
+
+for(let i=0;i<15;i++){
+
+current = current.clone().add(
+
+new THREE.Vector3(
+dir.x + (Math.random()-0.5)*1.2,
+dir.y + (Math.random()-0.5)*1.2,
+dir.z + (Math.random()-0.5)*1.2
+)
+
+);
+
+points.push(current.clone());
+
 }
 
-// --- مثال على كيفية استخدام الدالة لرسم المسار في المشهد ---
+const geometry =
+new THREE.BufferGeometry().setFromPoints(points);
 
-const startPoint = new THREE.Vector3(0, 0, 0);
-const direction = new THREE.Vector3(0, 1, 0); // الاتجاه للأعلى
-const endPoint = new THREE.Vector3(0, 10, 0);
+const material =
+new THREE.LineBasicMaterial({
 
-// استدعاء الدالة
-const curve = createWanderingPath(startPoint, direction, 10, 20, 0.5, endPoint);
+color:
+colors[
+Math.floor(
+Math.random()*colors.length
+)
+]
 
-// تحويل المسار إلى هندسة (Geometry) لرؤيته
-const points = curve.getPoints(50);
-const geometry = new THREE.BufferGeometry().setFromPoints(points);
-const material = new THREE.LineBasicMaterial({ color: 0xff00ff });
-const curveObject = new THREE.Line(geometry, material);
+});
 
-// أضف curveObject إلى المشهد الخاص بك scene.add(curveObject);
-        
+const line =
+new THREE.Line(
+geometry,
+material
+);
+
+scene.add(line);
+
+bolts.push(line);
+
+}
+
+for(let i=0;i<45;i++){
+createBolt();
+}
+
+/* PARTICLES */
+
+const particles = [];
+
+for(let i=0;i<120;i++){
+
+const p = new THREE.Mesh(
+
+new THREE.SphereGeometry(0.05),
+
+new THREE.MeshBasicMaterial({
+
+color:
+colors[
+Math.floor(
+Math.random()*colors.length
+)
+]
+
+})
+
+);
+
+p.position.set(
+
+(Math.random()-0.5)*6,
+(Math.random()-0.5)*6,
+(Math.random()-0.5)*6
+
+);
+
+scene.add(p);
+
+particles.push(p);
+
+}
+
+/* ANIMATE */
+
+function animate(){
+
+requestAnimationFrame(animate);
+
+core.rotation.y += 0.01;
+core.rotation.x += 0.005;
+
+glow.scale.x =
+1 + Math.sin(Date.now()*0.005)*0.08;
+
+glow.scale.y =
+1 + Math.sin(Date.now()*0.005)*0.08;
+
+glow.scale.z =
+1 + Math.sin(Date.now()*0.005)*0.08;
+
+particles.forEach(p=>{
+
+p.position.x +=
+(Math.random()-0.5)*0.03;
+
+p.position.y +=
+(Math.random()-0.5)*0.03;
+
+p.position.z +=
+(Math.random()-0.5)*0.03;
+
+});
+
+renderer.render(
+scene,
+camera
+);
+
+}
+
+animate();
+
+/* RESIZE */
+
+window.addEventListener("resize",()=>{
+
+camera.aspect =
+window.innerWidth/window.innerHeight;
+
+camera.updateProjectionMatrix();
+
+renderer.setSize(
+window.innerWidth,
+window.innerHeight
+);
+
+});
+
+</script>
+
+</body>
+</html>
