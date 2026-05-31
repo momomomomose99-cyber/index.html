@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zombie Survival Live</title>
+    <title>Zombie Game Final</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #000; }
+        body { margin: 0; overflow: hidden; background: #87CEEB; }
         #ui { position: absolute; top: 10px; left: 10px; color: white; font-size: 20px; z-index: 10; }
-        #fireBtn { position: absolute; bottom: 50px; right: 50px; width: 100px; height: 100px; background: red; border-radius: 50%; color: white; text-align: center; line-height: 100px; z-index: 10; }
+        #fireBtn { position: absolute; bottom: 50px; right: 50px; width: 100px; height: 100px; background: red; border-radius: 50%; color: white; text-align: center; line-height: 100px; z-index: 10; font-weight: bold; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
     <div id="ui">القتلى: <span id="killCount">0</span></div>
@@ -23,20 +24,26 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // إنشاء شكل "زومبي" بسيط من الكود (مكعب أخضر) لضمان الحركة
-        function createZombie() {
-            const geo = new THREE.BoxGeometry(1, 2, 1);
-            const mat = new THREE.MeshBasicMaterial({color: 0x00ff00});
-            const zombie = new THREE.Mesh(geo, mat);
-            zombie.position.set((Math.random()-0.5)*10, 0, -20);
-            scene.add(zombie);
-            return zombie;
-        }
+        scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+        let zombieTemplate = null;
+        const loader = new THREE.GLTFLoader();
+        
+        // تحميل الموديل الخاص بك
+        loader.load('zombie.glb', (gltf) => {
+            zombieTemplate = gltf.scene;
+        });
 
         let zombies = [];
-        for(let i=0; i<5; i++) zombies.push(createZombie());
+        function createZombie() {
+            if(!zombieTemplate) return;
+            const zombie = zombieTemplate.clone();
+            zombie.position.set((Math.random()-0.5)*10, 0, -20);
+            scene.add(zombie);
+            zombies.push(zombie);
+        }
+        setInterval(createZombie, 2000);
 
-        // تحكم بسيط
         document.getElementById('fireBtn').onclick = () => {
             if(zombies.length > 0) {
                 scene.remove(zombies[0]);
@@ -48,7 +55,7 @@
         camera.position.z = 5;
         function animate() {
             requestAnimationFrame(animate);
-            zombies.forEach(z => z.position.z += 0.05); // الزومبي يتحركون
+            zombies.forEach(z => z.position.z += 0.05);
             renderer.render(scene, camera);
         }
         animate();
