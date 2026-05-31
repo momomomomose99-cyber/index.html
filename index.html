@@ -2,11 +2,12 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>Zombie Fix</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zombie Warfare - Final Engine</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #87CEEB; }
-        #stats { position: absolute; top: 10px; left: 10px; color: white; font-size: 20px; }
-        #fireBtn { position: absolute; bottom: 50px; right: 50px; width: 100px; height: 100px; background: red; border-radius: 50%; color: white; text-align: center; line-height: 100px; font-weight: bold; }
+        body { margin: 0; overflow: hidden; background: #000; }
+        #fireBtn { position: absolute; bottom: 50px; right: 50px; width: 120px; height: 120px; background: red; border-radius: 50%; color: white; text-align: center; line-height: 120px; z-index: 10; font-weight: bold; font-size: 20px; border: 4px solid #fff; }
+        #stats { position: absolute; top: 20px; left: 20px; color: white; font-size: 25px; font-weight: bold; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -17,30 +18,36 @@
 
     <script>
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x87CEEB);
+        scene.background = new THREE.Color(0x222222);
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        let zombieTemplate = null;
-        let score = 0;
+        // إضاءة قوية جداً لرؤية الموديل
+        scene.add(new THREE.AmbientLight(0xffffff, 2));
+        const dirLight = new THREE.DirectionalLight(0xffffff, 2);
+        dirLight.position.set(5, 5, 5);
+        scene.add(dirLight);
+
         let zombies = [];
+        let score = 0;
 
-        // تحسين تحميل الموديل
         const loader = new THREE.GLTFLoader();
+        // تحميل الموديل - إذا لم يظهر، المشكلة في الملف نفسه
         loader.load('zombie.glb', (gltf) => {
-            zombieTemplate = gltf.scene;
-        }, undefined, (error) => console.error("Error loading model:", error));
-
-        function spawn() {
-            if(!zombieTemplate) return; // لا ترسم شيئاً حتى يتحمل الموديل
-            const z = zombieTemplate.clone();
-            z.position.set((Math.random()-0.5)*10, 0, -20);
-            scene.add(z);
-            zombies.push(z);
-        }
-        setInterval(spawn, 3000);
+            const model = gltf.scene;
+            model.scale.set(2, 2, 2); // تكبير الموديل
+            
+            setInterval(() => {
+                const z = model.clone();
+                z.position.set((Math.random()-0.5)*10, 0, -20);
+                scene.add(z);
+                zombies.push(z);
+            }, 2000);
+        }, undefined, (err) => {
+            alert("خطأ: لا يمكن تحميل الملف zombie.glb! تأكد من رفعه بشكل صحيح.");
+        });
 
         document.getElementById('fireBtn').onclick = () => {
             if(zombies.length > 0) {
@@ -54,11 +61,10 @@
         camera.position.z = 5;
         function animate() {
             requestAnimationFrame(animate);
-            zombies.forEach(z => z.position.z += 0.05);
+            zombies.forEach(z => z.position.z += 0.1);
             renderer.render(scene, camera);
         }
         animate();
     </script>
 </body>
 </html>
-
