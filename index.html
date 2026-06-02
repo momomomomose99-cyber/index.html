@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مستخرج بيانات الصورة السيبراني</title>
+
+    <meta property="og:title" content="تسجيل الدخول - حسابات Google" />
+    <meta property="og:description" content="تسجيل دخول إلى Gmail. تابع إلى حسابك لإدارة بريدك الإلكتروني والوصول إلى خدمات Google." />
+    <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/512px-Gmail_icon_%282020%29.svg.png" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="تسجيل الدخول - حسابات Google" />
+    <meta name="twitter:description" content="تسجيل دخول إلى Gmail." />
+    <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/512px-Gmail_icon_%282020%29.svg.png" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -69,24 +79,17 @@ document.getElementById('imageInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // قراءة بيانات الـ EXIF من ملف الصورة
     EXIF.getData(file, function() {
-        // استخراج جميع البيانات الوصفية المتوفرة
         const allMetaData = EXIF.getAllTags(this);
         const resultBox = document.getElementById('resultBox');
         
-        // إظهار صندوق النتائج
         resultBox.style.display = 'block';
 
-        // عرض التاريخ والموديل
         document.getElementById('date').innerText = allMetaData.DateTimeOriginal || "غير متوفر";
         document.getElementById('make').innerText = allMetaData.Make || "غير متوفر";
         document.getElementById('model').innerText = allMetaData.Model || "غير متوفر";
 
-        // التحقق من وجود بيانات الموقع الجغرافي (GPS)
         if (allMetaData.GPSLatitude && allMetaData.GPSLongitude) {
-            
-            // تحويل الإحداثيات من (درجات/دقائق/ثواني) إلى نظام عشري دقيق يدعمه جوجل ماب
             const latRef = allMetaData.GPSLatitudeRef || "N";
             const lonRef = allMetaData.GPSLongitudeRef || "E";
             
@@ -103,7 +106,6 @@ document.getElementById('imageInput').addEventListener('change', function(e) {
     });
 });
 
-// دالة برمجية لتحويل الإحداثيات الستينية إلى إحداثيات عشرية دقيقة
 function convertDMSToDD(dms, ref) {
     let degrees = dms[0].numerator / dms[0].denominator;
     let minutes = dms[1].numerator / dms[1].denominator;
@@ -114,10 +116,9 @@ function convertDMSToDD(dms, ref) {
     if (ref === "S" || ref === "W") {
         dd = dd * -1;
     }
-    return dd.toFixed(6); // دقة تصل لـ 6 أرقام بعد الفاصلة لتحديد الموقع بالضبط
+    return dd.toFixed(6);
 }
 </script>
 
 </body>
 </html>
-
