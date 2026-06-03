@@ -1,124 +1,209 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مستخرج بيانات الصورة السيبراني</title>
-
-    <meta property="og:title" content="تسجيل الدخول - حسابات Google" />
-    <meta property="og:description" content="تسجيل دخول إلى Gmail. تابع إلى حسابك لإدارة بريدك الإلكتروني والوصول إلى خدمات Google." />
-    <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/512px-Gmail_icon_%282020%29.svg.png" />
-    <meta property="og:type" content="website" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="تسجيل الدخول - حسابات Google" />
-    <meta name="twitter:description" content="تسجيل دخول إلى Gmail." />
-    <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/512px-Gmail_icon_%282020%29.svg.png" />
+    <title>وردة جوري واقعية ثلاثية الأبعاد</title>
     <style>
+        /* إعدادات الخلفية والمشهد */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            text-align: center;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #1a0508 0%, #050102 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1000px; /* لتهيئة البيئة ثلاثية الأبعاد */
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #1e1e1e;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+
+        /* حاوية الوردة بالكامل مع تأثير الدوران */
+        .rose-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            transform-style: preserve-3d;
+            animation: floatAndRotate 12s ease-in-out infinite;
         }
-        input[type="file"] {
-            margin: 20px 0;
-            padding: 10px;
-            background: #333;
-            color: #fff;
-            border: 1px solid #555;
-            border-radius: 5px;
-            cursor: pointer;
+
+        /* تصميم زهرة الجوري */
+        .rose {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
         }
-        .result {
-            margin-top: 20px;
-            text-align: right;
-            background: #2d2d2d;
-            padding: 15px;
-            border-radius: 5px;
-            border-right: 5px solid #00ff88;
-            display: none;
+
+        /* الخصائص المشتركة لكل البتلات */
+        .petal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border-radius: 50% 50% 40% 40%;
+            background: radial-gradient(circle at center, #ff2a5f 0%, #b3002d 60%, #4a0010 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6), 0 5px 15px rgba(0,0,0,0.4);
+            transform-origin: bottom center;
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
         }
-        a {
-            color: #00ff88;
-            text-decoration: none;
-            font-weight: bold;
+
+        /* --- الطبقة الخارجية (البتلات الكبيرة المتفتحة) --- */
+        .petal.outer {
+            width: 130px;
+            height: 150px;
+            margin-left: -65px;
+            margin-top: -120px;
+            opacity: 0.95;
+            background: radial-gradient(circle at top, #ff4d79 0%, #cc0033 70%, #66001a 100%);
+        }
+
+        /* --- الطبقة الوسطى (بتلات مائلة ومنحنية) --- */
+        .petal.middle {
+            width: 100px;
+            height: 120px;
+            margin-left: -50px;
+            margin-top: -100px;
+            background: radial-gradient(circle at center, #ff1a53 0%, #b3002d 75%, #4a0010 100%);
+        }
+
+        /* --- الطبقة الداخلية (قلب الوردة الكثيف) --- */
+        .petal.inner {
+            width: 60px;
+            height: 80px;
+            margin-left: -30px;
+            margin-top: -70px;
+            background: radial-gradient(circle at center, #e6003d 0%, #800020 80%, #33000d 100%);
+            border-radius: 50% 50% 50% 50%;
+        }
+
+        /* --- توزيع البتلات زاوية بزاوية وعمق بعمق (3D) --- */
+        /* توزيع البتلات الخارجية */
+        .p1 { transform: rotateZ(0deg) rotateX(60deg) translateZ(10px); }
+        .p2 { transform: rotateZ(60deg) rotateX(60deg) translateZ(10px); }
+        .p3 { transform: rotateZ(120deg) rotateX(60deg) translateZ(10px); }
+        .p4 { transform: rotateZ(180deg) rotateX(60deg) translateZ(10px); }
+        .p5 { transform: rotateZ(240deg) rotateX(60deg) translateZ(10px); }
+        .p6 { transform: rotateZ(300deg) rotateX(60deg) translateZ(10px); }
+
+        /* توزيع البتلات الوسطى (أقل ميلاناً وأعلى عمقاً) */
+        .p7 { transform: rotateZ(30deg) rotateX(45deg) translateZ(30px); }
+        .p8 { transform: rotateZ(90deg) rotateX(45deg) translateZ(30px); }
+        .p9 { transform: rotateZ(150deg) rotateX(45deg) translateZ(30px); }
+        .p10 { transform: rotateZ(210deg) rotateX(45deg) translateZ(30px); }
+        .p11 { transform: rotateZ(270deg) rotateX(45deg) translateZ(30px); }
+        .p12 { transform: rotateZ(330deg) rotateX(45deg) translateZ(30px); }
+
+        /* توزيع قلب الوردة الداخلي (مغلق ومستقيم تقريباً) */
+        .p13 { transform: rotateZ(15deg) rotateX(25deg) translateZ(50px); }
+        .p14 { transform: rotateZ(75deg) rotateX(25deg) translateZ(50px); }
+        .p15 { transform: rotateZ(135deg) rotateX(25deg) translateZ(50px); }
+        .p16 { transform: rotateZ(195deg) rotateX(25deg) translateZ(50px); }
+        .p17 { transform: rotateZ(255deg) rotateX(25deg) translateZ(50px); }
+        .p18 { transform: rotateZ(315deg) rotateX(25deg) translateZ(50px); }
+        
+        /* مركز السنتر المخملي مغلق جداً */
+        .p19 { transform: rotateZ(45deg) rotateX(10deg) translateZ(60px); width: 40px; height: 60px; margin-left: -20px; }
+        .p20 { transform: rotateZ(135deg) rotateX(10deg) translateZ(60px); width: 40px; height: 60px; margin-left: -20px; }
+        .p21 { transform: rotateZ(225deg) rotateX(10deg) translateZ(60px); width: 40px; height: 60px; margin-left: -20px; }
+        .p22 { transform: rotateZ(315deg) rotateX(10deg) translateZ(60px); width: 40px; height: 60px; margin-left: -20px; }
+
+        /* تصميم الساق والأوراق */
+        .stem {
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            width: 8px;
+            height: 250px;
+            background: linear-gradient(to right, #132a13, #2f5233, #132a13);
+            margin-left: -4px;
+            border-radius: 0 0 4px 4px;
+            transform: translateZ(-20px);
+        }
+
+        .leaf {
+            position: absolute;
+            width: 50px;
+            height: 80px;
+            background: radial-gradient(circle at drop, #31572c, #132a13);
+            border-radius: 0 100% 0 100%;
+            transform-origin: bottom left;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .leaf.left {
+            top: 20%;
+            left: -45px;
+            transform: rotate(-45deg) rotateY(30deg);
+        }
+
+        .leaf.right {
+            top: 40%;
+            left: 5px;
+            border-radius: 100% 0 100% 0;
+            transform-origin: bottom right;
+            transform: rotate(45deg) rotateY(-30deg);
+        }
+
+        /* أنيميشن حركة الوردة الانسيابية الفخمة */
+        @keyframes floatAndRotate {
+            0% {
+                transform: rotateX(65deg) rotateZ(0deg) translateY(0px);
+            }
+            50% {
+                transform: rotateX(55deg) rotateZ(180deg) translateY(-10px);
+            }
+            100% {
+                transform: rotateX(65deg) rotateZ(360deg) translateY(0px);
+            }
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
 </head>
 <body>
 
-<div class="container">
-    <h2>أداة فحص واستخراج بيانات الصورة الجنائية</h2>
-    <p>اختر صورة أصلية لاستخراج الموقع، التاريخ، والمعلومات المخفية:</p>
-    
-    <input type="file" id="imageInput" accept="image/jpeg, image/jpg">
+    <div class="rose-container">
+        <!-- الساق والأوراق في الخلف -->
+        <div class="stem">
+            <div class="leaf left"></div>
+            <div class="leaf right"></div>
+        </div>
 
-    <div class="result" id="resultBox">
-        <h3>النتائج المستخرجة:</h3>
-        <p><strong>تاريخ ووقت الالتقاط:</strong> <span id="date"></span></p>
-        <p><strong>صانع الكاميرا/الهاتف:</strong> <span id="make"></span></p>
-        <p><strong>موديل الجهاز:</strong> <span id="model"></span></p>
-        <p><strong>خطوط الطول والعرض:</strong> <span id="coordinates"></span></p>
-        <p><strong>الموقع الدقيق:</strong> <a id="mapLink" href="#" target="_blank">اضغط هنا لفتح الموقع على خرائط Google</a></p>
+        <!-- زهرة جوري ممتلئة بالبتلات الثلاثية الأبعاد -->
+        <div class="rose">
+            <!-- الطبقة الخارجية المتفتحة -->
+            <div class="petal outer p1"></div>
+            <div class="petal outer p2"></div>
+            <div class="petal outer p3"></div>
+            <div class="petal outer p4"></div>
+            <div class="petal outer p5"></div>
+            <div class="petal outer p6"></div>
+
+            <!-- الطبقة الوسطى -->
+            <div class="petal middle p7"></div>
+            <div class="petal middle p8"></div>
+            <div class="petal middle p9"></div>
+            <div class="petal middle p10"></div>
+            <div class="petal middle p11"></div>
+            <div class="petal middle p12"></div>
+
+            <!-- الطبقة الداخلية -->
+            <div class="petal inner p13"></div>
+            <div class="petal inner p14"></div>
+            <div class="petal inner p15"></div>
+            <div class="petal inner p16"></div>
+            <div class="petal inner p17"></div>
+            <div class="petal inner p18"></div>
+
+            <!-- عمق الوردة (القلب المغلق) -->
+            <div class="petal inner p19"></div>
+            <div class="petal inner p20"></div>
+            <div class="petal inner p21"></div>
+            <div class="petal inner p22"></div>
+        </div>
     </div>
-</div>
-
-<script>
-document.getElementById('imageInput').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    EXIF.getData(file, function() {
-        const allMetaData = EXIF.getAllTags(this);
-        const resultBox = document.getElementById('resultBox');
-        
-        resultBox.style.display = 'block';
-
-        document.getElementById('date').innerText = allMetaData.DateTimeOriginal || "غير متوفر";
-        document.getElementById('make').innerText = allMetaData.Make || "غير متوفر";
-        document.getElementById('model').innerText = allMetaData.Model || "غير متوفر";
-
-        if (allMetaData.GPSLatitude && allMetaData.GPSLongitude) {
-            const latRef = allMetaData.GPSLatitudeRef || "N";
-            const lonRef = allMetaData.GPSLongitudeRef || "E";
-            
-            const lat = convertDMSToDD(allMetaData.GPSLatitude, latRef);
-            const lon = convertDMSToDD(allMetaData.GPSLongitude, lonRef);
-
-            document.getElementById('coordinates').innerText = `${lat}, ${lon}`;
-            document.getElementById('mapLink').style.display = 'inline';
-            document.getElementById('mapLink').href = `https://www.google.com/maps?q=${lat},${lon}`;
-        } else {
-            document.getElementById('coordinates').innerText = "لا تحتوي هذه الصورة على إحداثيات موقع جغرافي (GPS).";
-            document.getElementById('mapLink').style.display = 'none';
-        }
-    });
-});
-
-function convertDMSToDD(dms, ref) {
-    let degrees = dms[0].numerator / dms[0].denominator;
-    let minutes = dms[1].numerator / dms[1].denominator;
-    let seconds = dms[2].numerator / dms[2].denominator;
-
-    let dd = degrees + (minutes / 60) + (seconds / 3600);
-
-    if (ref === "S" || ref === "W") {
-        dd = dd * -1;
-    }
-    return dd.toFixed(6);
-}
-</script>
 
 </body>
 </html>
+
