@@ -1,70 +1,373 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة المهام والأرباح المشتركة</title>
     <style>
+        :root {
+            --bg-color: #0b0b0b;
+            --card-bg: #141414;
+            --text-color: #ffffff;
+            --accent-color: #ff1a1a; /* اللون الأحمر للأزرار والخطوط */
+            --muted-text: #a0a0a0;
+        }
+
         body {
-            background-color: black;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 80px;
         }
-        .button {
-            background-color: red;
-            border: none;
-            color: white;
-            padding: 15px 32px;
+
+        .header {
+            background: linear-gradient(180deg, #660000 0%, var(--bg-color) 100%);
+            padding: 20px;
             text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
+            border-bottom: 2px solid var(--accent-color);
         }
-        .info {
-            color: blue;
-            font-size: 20px;
+
+        .container {
+            padding: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid #252525;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        /* لافتة التحذير وإخلاء المسؤولية */
+        .warning-banner {
+            background-color: #220000;
+            border: 2px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            color: #ff9999;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .warning-title {
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-red {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
             margin-top: 10px;
         }
-        .progress-bar {
+
+        .btn-red:hover {
+            background-color: #cc0000;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #222;
+        }
+
+        .input-field {
             width: 100%;
-            background-color: #f3f3f3;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background: #1a1a1a;
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        /* شريط التنقل السفلي بـ 3 أزرار فقط */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #050505;
+            border-top: 1px solid #222;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            color: var(--muted-text);
+            cursor: pointer;
+            font-size: 13px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .progress-bar-container {
+            background-color: #222;
+            border-radius: 10px;
+            height: 10px;
+            width: 100%;
+            margin-top: 10px;
             overflow: hidden;
         }
-        .progress-bar div {
-            height: 20px;
-            background-color: green;
-            width: 0;
+
+        .progress-bar {
+            background-color: var(--accent-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s;
         }
     </style>
 </head>
 <body>
-    <h1>تطبيق ربح للطرفين</h1>
-    <div class="button" onclick="showSubscriptionInfo()">ادخل بطاقتك البنكية</div>
-    <div id="subscriptionInfo" style="display:none;">
-        <div class="info">
-            <h2>معلومات الاشتراك</h2>
-            <p>المستوى 1: 10,000 دينار عراقي - 20 اعلان</p>
-            <p>المستوى 2: 15,000 دينار عراقي - 25 اعلان</p>
-            <p>المستوى 3: 20,000 دينار عراقي - 30 اعلان</p>
-        </div>
-        <div class="progress-bar">
-            <div id="progressBar"></div>
-        </div>
+
+    <div class="header">
+        <h2 id="page-title">الرئيسية</h2>
     </div>
+
+    <div class="container">
+        
+        <!-- ================= الصفحة الرئيسية ================= -->
+        <div id="sec-main" class="section">
+            <!-- التحذير في الواجهة الرئيسية -->
+            <div class="warning-banner">
+                <div class="warning-title">⚠️ تنبيه وإخلاء مسؤولية كاملة:</div>
+                هذه المنصة لا تجبر أي شخص على الإطلاق على الاشتراك أو دفع الأموال. إن قيامك بالاشتراك وتفعيل أي مستوى مالي هو قرار شخصي نابع من رغبتك ومسؤوليتك الكاملة والمستقلة، ولا تتحمل إدارة التطبيق أي تبعات أو مسؤولية ناتجة عن اختيارك.
+            </div>
+
+            <div class="card">
+                <h3>مستويات الاشتراك المتاحة</h3>
+                
+                <div style="border-bottom: 1px solid #222; padding: 10px 0;">
+                    <h4>المستوى 1 (10,000 د.ع)</h4>
+                    <p style="color: var(--muted-text); font-size: 13px;">20 إعلان يومياً | زيادة المحفظة بمقدار 1,000 د.ع</p>
+                    <button class="btn-red" onclick="showDepositModal(1, 10000)">طلب تفعيل المستوى 1</button>
+                </div>
+                
+                <div style="border-bottom: 1px solid #222; padding: 10px 0;">
+                    <h4>المستوى 2 (15,000 د.ع)</h4>
+                    <p style="color: var(--muted-text); font-size: 13px;">25 إعلان يومياً | زيادة المحفظة بمقدار 1,500 د.ع</p>
+                    <button class="btn-red" onclick="showDepositModal(2, 15000)">طلب تفعيل المستوى 2</button>
+                </div>
+
+                <div style="padding: 10px 0;">
+                    <h4>المستوى 3 (20,000 د.ع)</h4>
+                    <p style="color: var(--muted-text); font-size: 13px;">30 إعلان يومياً | زيادة المحفظة بمقدار 2,000 د.ع</p>
+                    <button class="btn-red" onclick="showDepositModal(3, 20000)">طلب تفعيل المستوى 3</button>
+                </div>
+            </div>
+
+            <!-- نافذة محاكاة إرسال التحويل اليدوي -->
+            <div id="deposit-modal" class="card hidden" style="border: 1px solid gold;">
+                <h4 style="color: gold; margin-top: 0;">تفاصيل إرسال الاشتراك يدوياً</h4>
+                <p style="font-size: 13px;">قم بتحويل المبلغ المطلوب إلى رقم زين كاش الإدارة الافتراضي، ثم اكتب رقم العملية أدناه للتأكيد:</p>
+                <input type="text" id="tx-id-input" class="input-field" placeholder="أدخل رقم العملية (Transaction ID)">
+                <button class="btn-red" style="background-color: gold; color: black;" onclick="submitDeposit()">إرسال كود التحويل للمراجعة</button>
+            </div>
+        </div>
+
+        <!-- ================= قاعة المهام ================= -->
+        <div id="sec-tasks" class="section hidden">
+            <div class="card">
+                <h3 id="task-level-title">يرجى الاشتراك أولاً لتنشيط المهام</h3>
+                <div id="task-stats" class="hidden">
+                    <div class="stat-row"><span>الإعلانات المتبقية:</span><span id="ads-left">0</span></div>
+                    <div class="stat-row"><span>الإعلانات المكتملة:</span><span id="ads-done">0</span></div>
+                    <div class="progress-bar-container"><div id="task-progress" class="progress-bar"></div></div>
+                </div>
+            </div>
+
+            <div id="ad-trigger-box" class="card hidden" style="text-align: center;">
+                <p>إعلان متاح للمشاهدة الآن</p>
+                <button class="btn-red" onclick="simulateWatchingAd()">▶ مشاهدة الإعلان الآن</button>
+            </div>
+        </div>
+
+        <!-- ================= صفحة (أنا) ================= -->
+        <div id="sec-me" class="section hidden">
+            <!-- خطوة التحذير والموافقة الإجبارية قبل الدخول للمعلومات -->
+            <div id="me-disclaimer" class="card" style="border: 1px solid var(--accent-color);">
+                <div class="warning-title">⚠️ شروط استخدام لوحة البيانات:</div>
+                <p style="font-size: 13px; line-height: 1.6; color: #ddd;">
+                    لإظهار وتنشيط معلومات حسابك والمحفظة، يجب أولاً تأكيد موافقتك بأنك دخلت واشتركت في هذه المنصة بكامل إرادتك الحرة ورغبتك الشخصية، وأنك تتحمل المسؤولية الكاملة عن أي اشتراكات مالية تقوم بها دون أي إجبار من إدارة التطبيق.
+                </p>
+                <button class="btn-red" onclick="acceptMeDisclaimer()">أوافق وأتحمل كامل المسؤولية - أدخل لوحتي</button>
+            </div>
+
+            <!-- لوحة معلومات الحساب والتحويلات المالي الحقيقية والآمنة (تظهر بعد الموافقة) -->
+            <div id="me-dashboard" class="hidden">
+                <div class="card">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="width: 45px; height: 45px; background: #222; border-radius: 50%; border: 2px solid var(--accent-color); display:flex; align-items:center; justify-content:center; font-weight:bold; margin-left: 10px;">👤</div>
+                        <div>
+                            <h4 style="margin: 0;">حساب المشترك</h4>
+                            <span style="font-size: 12px; color: gold;" id="user-current-v">المستوى: V0 (غير نشط)</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-row"><span>محفظة الرصيد الأرباح:</span><span style="color: #ff3333; font-weight: bold;" id="wallet-balance">0.00 IQD</span></div>
+                    <div class="stat-row"><span>دخل اليوم:</span><span id="today-income">0.00 IQD</span></div>
+                    <div class="stat-row"><span>إجمالي الدخل المجموع:</span><span id="total-income">0.00 IQD</span></div>
+                </div>
+
+                <!-- أزرار طلب السحب الحقيقي يدوياً -->
+                <div class="card">
+                    <h4>طلب سحب الأرباح يدوياً</h4>
+                    <input type="text" class="input-field" id="withdraw-wallet" placeholder="أدخل رقم محفظتك (زين كاش / ماستر)">
+                    <input type="number" class="input-field" id="withdraw-amount" placeholder="المبلغ المراد سحبه (IQD)">
+                    <button class="btn-red" onclick="requestWithdraw()">إرسال طلب السحب للإدارة</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- شريط التنقل السفلي (3 أزرار فقط) -->
+    <div class="nav-bar">
+        <div class="nav-item active" id="btn-main" onclick="switchSection('main')"><div>🏠</div><div>الرئيسية</div></div>
+        <div class="nav-item" id="btn-tasks" onclick="switchSection('tasks')"><div>📋</div><div>المهام</div></div>
+        <div class="nav-item" id="btn-me" onclick="switchSection('me')"><div>👤</div><div>أنا</div></div>
+    </div>
+
     <script>
-        function showSubscriptionInfo() {
-            document.getElementById('subscriptionInfo').style.display = 'block';
-        }
-        function updateProgressBar(amount, level) {
-            const progressBar = document.getElementById('progressBar');
-            let width = 0;
-            if (level === 1) {
-                width = (amount * 100) / 10000;
-            } else if (level === 2) {
-                width = (amount * 100) / 15000;
-            } else if (level === 3) {
-                width = (amount * 100) / 20000;
+        // المتغيرات الافتراضية للتشغيل والتجربة الفورية
+        let userLevel = 0;
+        let totalAds = 0;
+        let completedAds = 0;
+        let adReward = 0;
+        let balance = 0;
+        let selectedLevelToBuy = 0;
+
+        function switchSection(sec) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            if(sec === 'main') {
+                document.getElementById('sec-main').classList.remove('hidden');
+                document.getElementById('btn-main').classList.add('active');
+                document.getElementById('page-title').innerText = 'الرئيسية';
+            } else if(sec === 'tasks') {
+                document.getElementById('sec-tasks').classList.remove('hidden');
+                document.getElementById('btn-tasks').classList.add('active');
+                document.getElementById('page-title').innerText = 'قاعة المهام';
+            } else if(sec === 'me') {
+                document.getElementById('sec-me').classList.remove('hidden');
+                document.getElementById('btn-me').classList.add('active');
+                document.getElementById('page-title').innerText = 'أنا';
             }
-            progressBar.style.width = width + '%';
+        }
+
+        function showDepositModal(level, price) {
+            selectedLevelToBuy = level;
+            document.getElementById('deposit-modal').classList.remove('hidden');
+            document.getElementById('tx-id-input').focus();
+        }
+
+        function submitDeposit() {
+            let txId = document.getElementById('tx-id-input').value;
+            if(txId.trim() === "") {
+                alert("يرجى إدخال رقم العملية المطبوع في الوصل للتأكيد!");
+                return;
+            }
+            
+            // هنا في التطبيق الحقيقي يتم إرسال fetch لـ app.py
+            alert("تم إرسال رقم العملية إلى الإدارة بنجاح! سيتم مراجعة حوالتك وتفعيل المستوى لك يدوياً خلال دقائق.");
+            document.getElementById('deposit-modal').classList.add('hidden');
+            document.getElementById('tx-id-input').value = "";
+            
+            // محاكاة تفعيل الإدارة الفوري للتجربة الآن:
+            activateLevelSimulated(selectedLevelToBuy);
+        }
+
+        function activateLevelSimulated(level) {
+            userLevel = level;
+            if(level === 1) { totalAds = 20; adReward = 1000 / 20; }
+            else if(level === 2) { totalAds = 25; adReward = 1500 / 25; }
+            else if(level === 3) { totalAds = 30; adReward = 2000 / 30; }
+            completedAds = 0;
+
+            // تحديث واجهة المهام
+            document.getElementById('task-level-title').innerText = `المستوى النشط حالياً: V${userLevel}`;
+            document.getElementById('task-stats').classList.remove('hidden');
+            document.getElementById('ad-trigger-box').classList.remove('hidden');
+            document.getElementById('ads-left').innerText = totalAds;
+            document.getElementById('ads-done').innerText = 0;
+            document.getElementById('task-progress').style.width = "0%";
+
+            // تحديث واجهة الحساب
+            document.getElementById('user-current-v').innerText = `المستوى: V${userLevel}`;
+        }
+
+        function simulateWatchingAd() {
+            if(completedAds >= totalAds) {
+                alert("لقد أنهيت جميع إعلانات اليوم المتاحة لمستواك!");
+                return;
+            }
+
+            completedAds++;
+            let left = totalAds - completedAds;
+            balance += adReward;
+
+            document.getElementById('ads-done').innerText = completedAds;
+            document.getElementById('ads-left').innerText = left;
+            document.getElementById('task-progress').style.width = (completedAds / totalAds * 100) + "%";
+
+            // تحديث لوحة الأموال
+            document.getElementById('wallet-balance').innerText = balance.toFixed(2) + " IQD";
+            document.getElementById('today-income').innerText = balance.toFixed(2) + " IQD";
+            document.getElementById('total-income').innerText = balance.toFixed(2) + " IQD";
+
+            alert(`أحسنت! شاهدت الإعلان وتمت إضافة ${adReward.toFixed(2)} د.ع إلى محفظتك بشكل آمن.`);
+        }
+
+        function acceptMeDisclaimer() {
+            document.getElementById('me-disclaimer').classList.add('hidden');
+            document.getElementById('me-dashboard').classList.remove('hidden');
+        }
+
+        function requestWithdraw() {
+            let walletNum = document.getElementById('withdraw-wallet').value;
+            let amount = document.getElementById('withdraw-amount').value;
+
+            if(walletNum.trim() === "" || amount.trim() === "") {
+                alert("يرجى ملء الحقول المطلوبة لتقديم طلب السحب!");
+                return;
+            }
+            alert(`تم تسجيل طلب سحب مبلغ ${amount} د.ع إلى المحفظة ${walletNum}. ستتم معالجة الطلب وإرسال الأموال لك يدوياً من قبل الإدارة.`);
+            document.getElementById('withdraw-wallet').value = "";
+            document.getElementById('withdraw-amount').value = "";
         }
     </script>
 </body>
 </html>
+
