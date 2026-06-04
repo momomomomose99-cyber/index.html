@@ -241,6 +241,7 @@
             display: none !important;
         }
 
+        /* قفل الأزرار مبدئياً لحين ملء الاستمارة لغرض المحاكاة */
         .locked-nav {
             display: none !important;
         }
@@ -392,21 +393,21 @@
 
     </div>
 
-    <!-- ================= شريط التنقل السفلي الاحترافي والمطور بصرياً ================= -->
+    <!-- ================= شريط التنقل السفلي المطور ================= -->
     <div class="nav-bar">
-        <!-- زر الرئيسية (الاشتراكات) -->
+        <!-- زر الرئيسية -->
         <div class="nav-item locked-nav" id="nav-main" onclick="navigateTo('main')">
             <div class="nav-icon">🏠</div>
             <div>الرئيسية</div>
         </div>
         
-        <!-- زر المهام (الإعلانات) -->
+        <!-- زر المهام -->
         <div class="nav-item locked-nav" id="nav-tasks" onclick="navigateTo('tasks')">
             <div class="nav-icon">📋</div>
             <div>المهام</div>
         </div>
 
-        <!-- زر أنا (الافتتاحي) -->
+        <!-- زر أنا -->
         <div class="nav-item active" id="nav-me" onclick="navigateTo('me')">
             <div class="nav-icon">👤</div>
             <div>أنا</div>
@@ -468,6 +469,7 @@
             document.getElementById('wallet-registration-box').classList.add('hidden');
             document.getElementById('me-dashboard-box').classList.remove('hidden');
 
+            // إصلاح الخطأ المسبب لتعليق الشاشة: إزالة كلاس الحظر (locked-nav) بشكل صحيح
             document.getElementById('nav-main').classList.remove('locked-nav');
 
             alert(`تم تسجيل البيانات بنجاح في نموذج المحاكاة المطور. تم تفعيل خيار الرئيسية.`);
@@ -496,6 +498,4 @@
             document.getElementById('ads-done').innerText = 0;
             document.getElementById('task-progress').style.width = "0%";
 
-            document.getElementById('nav-tasks').classList.remove('locked-nav');
-
-            alert(`تمت محاكاة تف
+            /
