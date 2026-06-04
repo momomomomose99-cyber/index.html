@@ -6,11 +6,14 @@
     <title>منصة المهام والأرباح المشتركة</title>
     <style>
         :root {
-            --bg-color: #0b0b0b;
-            --card-bg: #141414;
-            --text-color: #ffffff;
-            --accent-color: #ff1a1a; /* اللون الأحمر للأزرار والخطوط */
-            --muted-text: #a0a0a0;
+            --bg-color: #ffffff;
+            --card-bg: #fdfdfd;
+            --text-color: #222222;
+            --accent-color: #2ecc71; /* أخضر فاتح للأزرار الأساسية */
+            --accent-hover: #27ae60;
+            --border-color: #e0e0e0;
+            --warning-bg: #fff5f5;
+            --warning-border: #ff4d4d;
         }
 
         body {
@@ -23,10 +26,11 @@
         }
 
         .header {
-            background: linear-gradient(180deg, #660000 0%, var(--bg-color) 100%);
-            padding: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
             text-align: center;
-            border-bottom: 2px solid var(--accent-color);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: bold;
         }
 
         .container {
@@ -37,35 +41,31 @@
 
         .card {
             background-color: var(--card-bg);
-            border: 1px solid #252525;
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 15px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        /* لافتة التحذير وإخلاء المسؤولية */
         .warning-banner {
-            background-color: #220000;
-            border: 2px solid var(--accent-color);
+            background-color: var(--warning-bg);
+            border: 2px solid var(--warning-border);
             border-radius: 8px;
-            padding: 12px;
+            padding: 15px;
             margin-bottom: 15px;
-            color: #ff9999;
-            font-size: 13px;
+            color: #c0392b;
+            font-size: 14px;
             line-height: 1.6;
         }
 
         .warning-title {
-            color: var(--accent-color);
             font-weight: bold;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            font-size: 15px;
+            margin-bottom: 8px;
         }
 
-        .btn-red {
+        .btn-green {
             background-color: var(--accent-color);
             color: white;
             border: none;
@@ -79,15 +79,15 @@
             margin-top: 10px;
         }
 
-        .btn-red:hover {
-            background-color: #cc0000;
+        .btn-green:hover {
+            background-color: var(--accent-hover);
         }
 
         .stat-row {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #eee;
         }
 
         .input-field {
@@ -95,32 +95,34 @@
             padding: 12px;
             margin: 8px 0;
             border-radius: 6px;
-            border: 1px solid #333;
-            background: #1a1a1a;
-            color: #fff;
+            border: 1px solid #ccc;
+            background: #fff;
+            color: #333;
             box-sizing: border-box;
+            font-size: 14px;
         }
 
-        /* شريط التنقل السفلي بـ 3 أزرار فقط */
+        /* شريط التنقل السفلي الأصلي مع إضافة الزر الثالث للتليجرام */
         .nav-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background-color: #050505;
-            border-top: 1px solid #222;
+            background-color: #ffffff;
+            border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
+            padding: 10px 0;
             z-index: 1000;
         }
 
         .nav-item {
-            color: var(--muted-text);
+            color: #888888;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             text-align: center;
             flex: 1;
+            text-decoration: none;
         }
 
         .nav-item.active {
@@ -129,11 +131,16 @@
         }
 
         .hidden {
-            display: none;
+            display: none !important;
+        }
+
+        /* إخفاء الأزرار غير المفعلة برمجياً لتجبر المستخدم على التتابع */
+        .locked-nav {
+            display: none !important;
         }
 
         .progress-bar-container {
-            background-color: #222;
+            background-color: #eee;
             border-radius: 10px;
             height: 10px;
             width: 100%;
@@ -152,222 +159,281 @@
 <body>
 
     <div class="header">
-        <h2 id="page-title">الرئيسية</h2>
+        <span id="page-title">أنا</span>
     </div>
 
     <div class="container">
         
-        <!-- ================= الصفحة الرئيسية ================= -->
-        <div id="sec-main" class="section">
-            <!-- التحذير في الواجهة الرئيسية -->
-            <div class="warning-banner">
+        <!-- ================= قسم (أنا) - يفتح أولاً وتلقائياً ================= -->
+        <div id="sec-me" class="section">
+            
+            <!-- العلامة التحذيرية وإخلاء المسؤولية متواجدة هنا في منطقة (أنا) قبل تسجيل البطاقة -->
+            <div id="me-disclaimer-box" class="warning-banner">
                 <div class="warning-title">⚠️ تنبيه وإخلاء مسؤولية كاملة:</div>
-                هذه المنصة لا تجبر أي شخص على الإطلاق على الاشتراك أو دفع الأموال. إن قيامك بالاشتراك وتفعيل أي مستوى مالي هو قرار شخصي نابع من رغبتك ومسؤوليتك الكاملة والمستقلة، ولا تتحمل إدارة التطبيق أي تبعات أو مسؤولية ناتجة عن اختيارك.
+                <p style="margin: 0;">
+                    هذه المنصة لا تجبر أي شخص على الإطلاق على الاشتراك أو دفع الأموال. إن قيامك بالاشتراك وتفعيل أي مستوى مالي هو قرار شخصي نابع من رغبتك ومسؤوليتك الكاملة والمستقلة، ولا تتحمل إدارة التطبيق أي تبعات أو مسؤولية ناتجة عن اختيارك. تسجيل معلوماتك وتفعيل الحساب يتم بأموال حقيقية وعلى مسؤوليتك الشخصية الكاملة بعد قراءة هذا التحذير.
+                </p>
             </div>
 
+            <!-- نموذج تسجيل الحساب المالي والبطاقة الحقيقية -->
+            <div id="wallet-registration-box" class="card">
+                <h4 style="margin-top: 0;">تسجيل وتأكيد الحساب المالي الحقيقي</h4>
+                <p style="font-size: 12px; color: #666; margin-bottom: 10px;">
+                    يرجى تحديد نوع البطاقة المستخدمة لإيداع الأموال الحقيقية وتفعيل حسابك (زين كاش، ماستر كارد، كي كارد):
+                </p>
+                
+                <select id="card-type" class="input-field">
+                    <option value="زين كاش">زين كاش (Zain Cash)</option>
+                    <option value="ماستر كارد">ماستر كارد (MasterCard)</option>
+                    <option value="كي كارد">كي كارد (Qi Card)</option>
+                </select>
+
+                <input type="text" id="card-number" class="input-field" placeholder="أدخل رقم المحفظة أو الحساب المالي">
+                <input type="number" id="deposit-amount" class="input-field" placeholder="المبلغ المودع الحقيقي (IQD)">
+                
+                <button class="btn-green" onclick="registerRealCard()">حفظ وتسجيل معلومات البطاقة</button>
+            </div>
+
+            <!-- لوحة البيانات المالية وزر سحب الأموال (تظهر بعد التسجيل بنجاح) -->
+            <div id="me-dashboard-box" class="hidden">
+                <div class="card">
+                    <h4>لوحة الحساب المالي النشط</h4>
+                    <div class="stat-row"><span>نوع البطاقة المسجلة:</span><span id="lbl-card-type" style="font-weight: bold;">-</span></div>
+                    <div class="stat-row"><span>رأس المال المدخل الحقيقي:</span><span id="lbl-deposit-amount" style="font-weight: bold; color: #2ecc71;">0 د.ع</span></div>
+                    <div class="stat-row"><span>محفظة الأرباح الحالية:</span><span id="lbl-earnings" style="font-weight: bold; color: #27ae60;">0 د.ع</span></div>
+                    <div class="stat-row"><span>حالة تفعيل الاشتراك:</span><span id="lbl-sub-status" style="font-weight: bold; color: #e74c3c;">غير مشترك</span></div>
+                </div>
+
+                <!-- زر سحب الأموال في حال الاشتراك بالغلط مع استقطاع 5% من المبلغ المدخل فقط -->
+                <div class="card" style="border: 1px solid var(--warning-border);">
+                    <h4 style="color: #c0392b; margin-top: 0;">سحب الأموال المستثمرة</h4>
+                    <p style="font-size: 12px; color: #666;">
+                        في حال قمت بالاشتراك أو الإيداع عن طريق الخطأ، يمكنك سحب الأموال التي أدخلتها فقط. يرجى العلم أنه سوف يتم قص واستقطاع نسبة <b>5%</b> من المبلغ عند السحب كرسوم تحويل وإلغاء.
+                    </p>
+                    <button class="btn-green" style="background-color: #ff4d4d;" onclick="withdrawDepositedFunds()">سحب الأموال (خصم 5% تلقائياً)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= قسم الاشتراكات (يفتح بعد تسجيل البطاقة) ================= -->
+        <div id="sec-main" class="section hidden">
             <div class="card">
                 <h3>مستويات الاشتراك المتاحة</h3>
+                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">اختر باقة الاشتراك المناسبة لرأس مالك الحقيقي الذي قمت بتسجيله لبدء جني الأرباح:</p>
                 
-                <div style="border-bottom: 1px solid #222; padding: 10px 0;">
-                    <h4>المستوى 1 (10,000 د.ع)</h4>
-                    <p style="color: var(--muted-text); font-size: 13px;">20 إعلان يومياً | زيادة المحفظة بمقدار 1,000 د.ع</p>
-                    <button class="btn-red" onclick="showDepositModal(1, 10000)">طلب تفعيل المستوى 1</button>
+                <div style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">
+                    <h4 style="margin: 0;">المستوى 1 (10,000 د.ع)</h4>
+                    <p style="color: #666; font-size: 13px; margin: 5px 0;">20 إعلان يومياً | زيادة المحفظة بمقدار 1,000 د.ع</p>
+                    <button class="btn-green" onclick="buySubscriptionLevel(1, 10000)">طلب تفعيل المستوى 1</button>
                 </div>
                 
-                <div style="border-bottom: 1px solid #222; padding: 10px 0;">
-                    <h4>المستوى 2 (15,000 د.ع)</h4>
-                    <p style="color: var(--muted-text); font-size: 13px;">25 إعلان يومياً | زيادة المحفظة بمقدار 1,500 د.ع</p>
-                    <button class="btn-red" onclick="showDepositModal(2, 15000)">طلب تفعيل المستوى 2</button>
+                <div style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">
+                    <h4 style="margin: 0;">المستوى 2 (15,000 د.ع)</h4>
+                    <p style="color: #666; font-size: 13px; margin: 5px 0;">25 إعلان يومياً | زيادة المحفظة بمقدار 1,500 د.ع</p>
+                    <button class="btn-green" onclick="buySubscriptionLevel(2, 15000)">طلب تفعيل المستوى 2</button>
                 </div>
 
-                <div style="padding: 10px 0;">
-                    <h4>المستوى 3 (20,000 د.ع)</h4>
-                    <p style="color: var(--muted-text); font-size: 13px;">30 إعلان يومياً | زيادة المحفظة بمقدار 2,000 د.ع</p>
-                    <button class="btn-red" onclick="showDepositModal(3, 20000)">طلب تفعيل المستوى 3</button>
+                <div>
+                    <h4 style="margin: 0;">المستوى 3 (20,000 د.ع)</h4>
+                    <p style="color: #666; font-size: 13px; margin: 5px 0;">30 إعلان يومياً | زيادة المحفظة بمقدار 2,000 د.ع</p>
+                    <button class="btn-green" onclick="buySubscriptionLevel(3, 20000)">طلب تفعيل المستوى 3</button>
                 </div>
-            </div>
-
-            <!-- نافذة محاكاة إرسال التحويل اليدوي -->
-            <div id="deposit-modal" class="card hidden" style="border: 1px solid gold;">
-                <h4 style="color: gold; margin-top: 0;">تفاصيل إرسال الاشتراك يدوياً</h4>
-                <p style="font-size: 13px;">قم بتحويل المبلغ المطلوب إلى رقم زين كاش الإدارة الافتراضي، ثم اكتب رقم العملية أدناه للتأكيد:</p>
-                <input type="text" id="tx-id-input" class="input-field" placeholder="أدخل رقم العملية (Transaction ID)">
-                <button class="btn-red" style="background-color: gold; color: black;" onclick="submitDeposit()">إرسال كود التحويل للمراجعة</button>
             </div>
         </div>
 
-        <!-- ================= قاعة المهام ================= -->
+        <!-- ================= قسم قاعة المهام (يفتح بعد اختيار الاشتراك) ================= -->
         <div id="sec-tasks" class="section hidden">
             <div class="card">
-                <h3 id="task-level-title">يرجى الاشتراك أولاً لتنشيط المهام</h3>
-                <div id="task-stats" class="hidden">
-                    <div class="stat-row"><span>الإعلانات المتبقية:</span><span id="ads-left">0</span></div>
-                    <div class="stat-row"><span>الإعلانات المكتملة:</span><span id="ads-done">0</span></div>
-                    <div class="progress-bar-container"><div id="task-progress" class="progress-bar"></div></div>
-                </div>
+                <h3 id="task-title" style="margin-top: 0;">شاهد الإعلانات اليومية</h3>
+                <div class="stat-row"><span>الإعلانات المتبقية لليوم:</span><span id="ads-left">0</span></div>
+                <div class="stat-row"><span>الإعلانات المكتملة:</span><span id="ads-done">0</span></div>
+                <div class="progress-bar-container"><div id="task-progress" class="progress-bar"></div></div>
             </div>
 
-            <div id="ad-trigger-box" class="card hidden" style="text-align: center;">
-                <p>إعلان متاح للمشاهدة الآن</p>
-                <button class="btn-red" onclick="simulateWatchingAd()">▶ مشاهدة الإعلان الآن</button>
-            </div>
-        </div>
-
-        <!-- ================= صفحة (أنا) ================= -->
-        <div id="sec-me" class="section hidden">
-            <!-- خطوة التحذير والموافقة الإجبارية قبل الدخول للمعلومات -->
-            <div id="me-disclaimer" class="card" style="border: 1px solid var(--accent-color);">
-                <div class="warning-title">⚠️ شروط استخدام لوحة البيانات:</div>
-                <p style="font-size: 13px; line-height: 1.6; color: #ddd;">
-                    لإظهار وتنشيط معلومات حسابك والمحفظة، يجب أولاً تأكيد موافقتك بأنك دخلت واشتركت في هذه المنصة بكامل إرادتك الحرة ورغبتك الشخصية، وأنك تتحمل المسؤولية الكاملة عن أي اشتراكات مالية تقوم بها دون أي إجبار من إدارة التطبيق.
-                </p>
-                <button class="btn-red" onclick="acceptMeDisclaimer()">أوافق وأتحمل كامل المسؤولية - أدخل لوحتي</button>
-            </div>
-
-            <!-- لوحة معلومات الحساب والتحويلات المالي الحقيقية والآمنة (تظهر بعد الموافقة) -->
-            <div id="me-dashboard" class="hidden">
-                <div class="card">
-                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                        <div style="width: 45px; height: 45px; background: #222; border-radius: 50%; border: 2px solid var(--accent-color); display:flex; align-items:center; justify-content:center; font-weight:bold; margin-left: 10px;">👤</div>
-                        <div>
-                            <h4 style="margin: 0;">حساب المشترك</h4>
-                            <span style="font-size: 12px; color: gold;" id="user-current-v">المستوى: V0 (غير نشط)</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-row"><span>محفظة الرصيد الأرباح:</span><span style="color: #ff3333; font-weight: bold;" id="wallet-balance">0.00 IQD</span></div>
-                    <div class="stat-row"><span>دخل اليوم:</span><span id="today-income">0.00 IQD</span></div>
-                    <div class="stat-row"><span>إجمالي الدخل المجموع:</span><span id="total-income">0.00 IQD</span></div>
-                </div>
-
-                <!-- أزرار طلب السحب الحقيقي يدوياً -->
-                <div class="card">
-                    <h4>طلب سحب الأرباح يدوياً</h4>
-                    <input type="text" class="input-field" id="withdraw-wallet" placeholder="أدخل رقم محفظتك (زين كاش / ماستر)">
-                    <input type="number" class="input-field" id="withdraw-amount" placeholder="المبلغ المراد سحبه (IQD)">
-                    <button class="btn-red" onclick="requestWithdraw()">إرسال طلب السحب للإدارة</button>
-                </div>
+            <div class="card" style="text-align: center;">
+                <button class="btn-green" onclick="simulateWatchingAd()">▶ اضغط هنا لمشاهدة الإعلان وضخ الأرباح</button>
             </div>
         </div>
 
     </div>
 
-    <!-- شريط التنقل السفلي (3 أزرار فقط) -->
+    <!-- ================= شريط التنقل السفلي المطور حسب شروطه الدقيقة ================= -->
     <div class="nav-bar">
-        <div class="nav-item active" id="btn-main" onclick="switchSection('main')"><div>🏠</div><div>الرئيسية</div></div>
-        <div class="nav-item" id="btn-tasks" onclick="switchSection('tasks')"><div>📋</div><div>المهام</div></div>
-        <div class="nav-item" id="btn-me" onclick="switchSection('me')"><div>👤</div><div>أنا</div></div>
+        <!-- الزر الأول: الرئيسية (الاشتراكات) - يبدأ مخفياً لحين تسجيل البطاقة البنكية -->
+        <div class="nav-item locked-nav" id="nav-main" onclick="navigateTo('main')">
+            <div style="font-size: 20px;">🏠</div>
+            <div>الرئيسية</div>
+        </div>
+        
+        <!-- الزر الثاني: المهام - يبدأ مخفياً لحين اختيار باقة الاشتراك وتفعيلها -->
+        <div class="nav-item locked-nav" id="nav-tasks" onclick="navigateTo('tasks')">
+            <div style="font-size: 20px;">📋</div>
+            <div>المهام</div>
+        </div>
+
+        <!-- الزر الثالث الجديد والمطلوب: الدخول إلى جروب التليجرام بالإنجليزية ورابطه المباشر -->
+        <a href="https://t.me/+xJYDf-ZMDoE0MDQy" target="_blank" class="nav-item" id="nav-telegram" style="color: #0088cc; font-weight: bold;">
+            <div style="font-size: 20px;">✈️</div>
+            <div>Join Group</div>
+        </a>
+
+        <!-- الزر الافتراضي الذي تفتح عليه المنصة تلقائياً وتكون باينة لوحدها -->
+        <div class="nav-item active" id="nav-me" onclick="navigateTo('me')">
+            <div style="font-size: 20px;">👤</div>
+            <div>أنا</div>
+        </div>
     </div>
 
     <script>
-        // المتغيرات الافتراضية للتشغيل والتجربة الفورية
-        let userLevel = 0;
-        let totalAds = 0;
-        let completedAds = 0;
-        let adReward = 0;
-        let balance = 0;
-        let selectedLevelToBuy = 0;
+        // المتغيرات البرمجية لإدارة حالة المنصة الحقيقية
+        let cardRegistered = false;
+        let activeSubscription = false;
+        let userCardType = "";
+        let realDepositedMoney = 0;
+        let realEarningsMoney = 0;
 
-        function switchSection(sec) {
+        let selectedLevel = 0;
+        let maxAds = 0;
+        let currentAdsDone = 0;
+        let profitPerAd = 0;
+
+        // دالة التنقل والتحكم بالأقسام والتبويبات
+        function navigateTo(section) {
+            if (section === 'main' && !cardRegistered) return;
+            if (section === 'tasks' && !activeSubscription) return;
+
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
-            if(sec === 'main') {
-                document.getElementById('sec-main').classList.remove('hidden');
-                document.getElementById('btn-main').classList.add('active');
-                document.getElementById('page-title').innerText = 'الرئيسية';
-            } else if(sec === 'tasks') {
-                document.getElementById('sec-tasks').classList.remove('hidden');
-                document.getElementById('btn-tasks').classList.add('active');
-                document.getElementById('page-title').innerText = 'قاعة المهام';
-            } else if(sec === 'me') {
+
+            if (section === 'me') {
                 document.getElementById('sec-me').classList.remove('hidden');
-                document.getElementById('btn-me').classList.add('active');
+                document.getElementById('nav-me').classList.add('active');
                 document.getElementById('page-title').innerText = 'أنا';
+            } else if (section === 'main') {
+                document.getElementById('sec-main').classList.remove('hidden');
+                document.getElementById('nav-main').classList.add('active');
+                document.getElementById('page-title').innerText = 'الرئيسية (الاشتراكات)';
+            } else if (section === 'tasks') {
+                document.getElementById('sec-tasks').classList.remove('hidden');
+                document.getElementById('nav-tasks').classList.add('active');
+                document.getElementById('page-title').innerText = 'قاعة المهام';
             }
         }
 
-        function showDepositModal(level, price) {
-            selectedLevelToBuy = level;
-            document.getElementById('deposit-modal').classList.remove('hidden');
-            document.getElementById('tx-id-input').focus();
-        }
+        // خطوة 1: تسجيل البطاقة البنكية الحقيقية من صفحة (أنا)
+        function registerRealCard() {
+            let cardNumber = document.getElementById('card-number').value.trim();
+            let amount = parseFloat(document.getElementById('deposit-amount').value);
+            let type = document.getElementById('card-type').value;
 
-        function submitDeposit() {
-            let txId = document.getElementById('tx-id-input').value;
-            if(txId.trim() === "") {
-                alert("يرجى إدخال رقم العملية المطبوع في الوصل للتأكيد!");
+            if (cardNumber === "" || isNaN(amount) || amount <= 0) {
+                alert("تنبيه: يرجى إدخال معلومات بطاقتك البنكية الحقيقية والمبلغ الذي قمت بإيداعه للمتابعة!");
                 return;
             }
+
+            // تأكيد التسجيل والربط المالي الحقيقي
+            cardRegistered = true;
+            userCardType = type;
+            realDepositedMoney = amount;
+
+            // تحديث بيانات لوحة التحكم في صفحة "أنا"
+            document.getElementById('lbl-card-type').innerText = userCardType;
+            document.getElementById('lbl-deposit-amount').innerText = realDepositedMoney.toLocaleString() + " د.ع";
             
-            // هنا في التطبيق الحقيقي يتم إرسال fetch لـ app.py
-            alert("تم إرسال رقم العملية إلى الإدارة بنجاح! سيتم مراجعة حوالتك وتفعيل المستوى لك يدوياً خلال دقائق.");
-            document.getElementById('deposit-modal').classList.add('hidden');
-            document.getElementById('tx-id-input').value = "";
-            
-            // محاكاة تفعيل الإدارة الفوري للتجربة الآن:
-            activateLevelSimulated(selectedLevelToBuy);
+            // إخفاء كود التسجيل وإظهار لوحة الحساب المالي الفعلي وزر السحب
+            document.getElementById('wallet-registration-box').classList.add('hidden');
+            document.getElementById('me-dashboard-box').classList.remove('hidden');
+
+            // إظهار وفتح الزر الثاني (الرئيسية / الاشتراكات) في شريط التنقل السفلي تلقائياً
+            document.getElementById('nav-main').classList.remove('locked-nav');
+
+            alert(`تم تسجيل بطاقتك البنكية المستندة لـ (${type}) بنجاح. تم فتح قسم الاشتراكات لك الآن بالكامل.`);
+            navigateTo('main'); // توجيه تلقائي لقسم الاشتراكات
         }
 
-        function activateLevelSimulated(level) {
-            userLevel = level;
-            if(level === 1) { totalAds = 20; adReward = 1000 / 20; }
-            else if(level === 2) { totalAds = 25; adReward = 1500 / 25; }
-            else if(level === 3) { totalAds = 30; adReward = 2000 / 30; }
-            completedAds = 0;
+        // خطوة 2: اختيار وتفعيل باقة مستوى الاشتراك المالي الحقيقي
+        function buySubscriptionLevel(level, price) {
+            if (realDepositedMoney < price) {
+                alert(`رأس مالك المودع الحالي (${realDepositedMoney.toLocaleString()} د.ع) غير كافٍ لتفعيل هذا المستوى. يتطلب هذا المستوى إيداع ${price.toLocaleString()} د.ع على الأقل.`);
+                return;
+            }
 
-            // تحديث واجهة المهام
-            document.getElementById('task-level-title').innerText = `المستوى النشط حالياً: V${userLevel}`;
-            document.getElementById('task-stats').classList.remove('hidden');
-            document.getElementById('ad-trigger-box').classList.remove('hidden');
-            document.getElementById('ads-left').innerText = totalAds;
+            selectedLevel = level;
+            activeSubscription = true;
+            
+            if (level === 1) { maxAds = 20; profitPerAd = 1000 / 20; }
+            else if (level === 2) { maxAds = 25; profitPerAd = 1500 / 25; }
+            else if (level === 3) { maxAds = 30; profitPerAd = 2000 / 30; }
+            
+            currentAdsDone = 0;
+
+            // تحديث الواجهات والبيانات المالية
+            document.getElementById('lbl-sub-status').innerText = `مشترك بالمستوى V${level}`;
+            document.getElementById('lbl-sub-status').style.color = "#2ecc71";
+
+            document.getElementById('task-title').innerText = `إعلانات المستوى النشط V${level}`;
+            document.getElementById('ads-left').innerText = maxAds;
             document.getElementById('ads-done').innerText = 0;
             document.getElementById('task-progress').style.width = "0%";
 
-            // تحديث واجهة الحساب
-            document.getElementById('user-current-v').innerText = `المستوى: V${userLevel}`;
+            // إظهار وفتح زر قاعة المهام في شريط التنقل السفلي تلقائياً بعد الاشتراك
+            document.getElementById('nav-tasks').classList.remove('locked-nav');
+
+            alert(`تمت عملية الاشتراك وتفعيل المستوى V${level} بنجاح! يمكنك الآن الانتقال لقاعة المهام ومتابعة الإعلانات.`);
+            navigateTo('tasks'); // توجيه تلقائي لقسم المهام
         }
 
+        // خطوة 3: مشاهدة الإعلانات وتجميع الأرباح
         function simulateWatchingAd() {
-            if(completedAds >= totalAds) {
-                alert("لقد أنهيت جميع إعلانات اليوم المتاحة لمستواك!");
+            if (currentAdsDone >= maxAds) {
+                alert("لقد أكملت جميع الإعلانات والمهام المتاحة لباقة اشتراكك لهذا اليوم بنجاح!");
                 return;
             }
 
-            completedAds++;
-            let left = totalAds - completedAds;
-            balance += adReward;
+            currentAdsDone++;
+            let left = maxAds - currentAdsDone;
+            realEarningsMoney += profitPerAd;
 
-            document.getElementById('ads-done').innerText = completedAds;
+            // تحديث العدادات وخط التقدم
+            document.getElementById('ads-done').innerText = currentAdsDone;
             document.getElementById('ads-left').innerText = left;
-            document.getElementById('task-progress').style.width = (completedAds / totalAds * 100) + "%";
+            document.getElementById('task-progress').style.width = (currentAdsDone / maxAds * 100) + "%";
 
-            // تحديث لوحة الأموال
-            document.getElementById('wallet-balance').innerText = balance.toFixed(2) + " IQD";
-            document.getElementById('today-income').innerText = balance.toFixed(2) + " IQD";
-            document.getElementById('total-income').innerText = balance.toFixed(2) + " IQD";
+            // تحديث محفظة الأرباح بصفحة "أنا"
+            document.getElementById('lbl-earnings').innerText = realEarningsMoney.toFixed(0) + " د.ع";
 
-            alert(`أحسنت! شاهدت الإعلان وتمت إضافة ${adReward.toFixed(2)} د.ع إلى محفظتك بشكل آمن.`);
+            alert(`تهانينا! شاهدت الإعلان بنجاح وتمت إضافة أرباح بقيمة ${profitPerAd.toFixed(0)} د.ع إلى محفظتك الحقيقية.`);
         }
 
-        function acceptMeDisclaimer() {
-            document.getElementById('me-disclaimer').classList.add('hidden');
-            document.getElementById('me-dashboard').classList.remove('hidden');
-        }
-
-        function requestWithdraw() {
-            let walletNum = document.getElementById('withdraw-wallet').value;
-            let amount = document.getElementById('withdraw-amount').value;
-
-            if(walletNum.trim() === "" || amount.trim() === "") {
-                alert("يرجى ملء الحقول المطلوبة لتقديم طلب السحب!");
+        // خطوة 4: سحب الأموال المدخلة فقط في حال الاشتراك بالغلط مع قص ونسبة خصم 5%
+        function withdrawDepositedFunds() {
+            if (realDepositedMoney <= 0) {
+                alert("خطأ: لا يوجد أي رأس مال متاح في حسابك حالياً لتتمكن من سحبه!");
                 return;
             }
-            alert(`تم تسجيل طلب سحب مبلغ ${amount} د.ع إلى المحفظة ${walletNum}. ستتم معالجة الطلب وإرسال الأموال لك يدوياً من قبل الإدارة.`);
-            document.getElementById('withdraw-wallet').value = "";
-            document.getElementById('withdraw-amount').value = "";
+
+            // احتساب رسوم وقص نسبة الـ 5% من المبلغ المودع الأصلي فقط
+            let cutAmount = realDepositedMoney * 0.05;
+            let netRefund = realDepositedMoney - cutAmount;
+
+            alert(`تم تأكيد طلب السحب لإلغاء الاشتراك الفوري.\n\nالمبلغ الأصلي المودع: ${realDepositedMoney.toLocaleString()} د.ع\nرسوم الخصم والإلغاء (5%): ${cutAmount.toLocaleString()} د.ع\nالمبلغ الصافي الذي سيتم تحويله لمحفظتك: ${netRefund.toLocaleString()} د.ع.\n\nسيتم إرسال المبلغ الصافي لبطاقتك المسجلة قريباً.`);
+            
+            // إعادة النظام المالي لوضعه الأساسي وإعادة قفل الأزرار المتقدمة
+            realDepositedMoney = 0;
+            realEarningsMoney = 0;
+            cardRegistered = false;
+            activeSubscription = false;
+
+            document.getElementById('me-dashboard-box').classList.add('hidden');
+            document.getElementById('wallet-registration-box').classList.remove('hidden');
+            document.getElementById('card-number').value = "";
+            document.getElementById('deposit-amount').value = "";
+
+            document.getElementById('nav-main').classList.add('locked-nav');
+            document.getElementById('nav-tasks').classList.add('locked-nav');
+
+            navigateTo('me');
         }
     </script>
 </body>
 </html>
-
