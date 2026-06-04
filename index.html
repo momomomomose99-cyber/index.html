@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المهام والأرباح المشتركة</title>
+    <title>منصة المهام والأرباح المشتركة - نسخة تجريبية</title>
     <style>
         :root {
             --bg-color: #ffffff;
             --card-bg: #fdfdfd;
             --text-color: #222222;
-            --accent-color: #2ecc71; /* أخضر فاتح للأزرار الأساسية */
+            --accent-color: #2ecc71; /* أخضر فاتح للأزرار والنصوص النشطة */
             --accent-hover: #27ae60;
             --border-color: #e0e0e0;
             --warning-bg: #fff5f5;
@@ -86,8 +86,13 @@
         .stat-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
+            align-items: center;
+            padding: 12px 0;
             border-bottom: 1px solid #eee;
+        }
+        
+        .stat-row:last-child {
+            border-bottom: none;
         }
 
         .input-field {
@@ -102,7 +107,18 @@
             font-size: 14px;
         }
 
-        /* شريط التنقل السفلي الأصلي مع إضافة الزر الثالث للتليجرام */
+        .tg-link {
+            color: #0088cc;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .tg-link:hover {
+            text-decoration: underline;
+        }
+
+        /* شريط التنقل السفلي الأصلي بعد إزالة زر التليجرام وعودته لزرين فقط */
         .nav-bar {
             position: fixed;
             bottom: 0;
@@ -134,7 +150,6 @@
             display: none !important;
         }
 
-        /* إخفاء الأزرار غير المفعلة برمجياً لتجبر المستخدم على التتابع */
         .locked-nav {
             display: none !important;
         }
@@ -164,18 +179,18 @@
 
     <div class="container">
         
-        <!-- ================= قسم (أنا) - يفتح أولاً وتلقائياً ================= -->
+        <!-- ================= قسم (أنا) ================= -->
         <div id="sec-me" class="section">
             
-            <!-- العلامة التحذيرية وإخلاء المسؤولية متواجدة هنا في منطقة (أنا) قبل تسجيل البطاقة -->
+            <!-- العلامة التحذيرية وإخلاء المسؤولية التجريبية في منطقة (أنا) -->
             <div id="me-disclaimer-box" class="warning-banner">
-                <div class="warning-title">⚠️ تنبيه وإخلاء مسؤولية كاملة:</div>
+                <div class="warning-title">⚠️ تنبيه وإخلاء مسؤولية كاملة (نسخة تجريبية):</div>
                 <p style="margin: 0;">
                     هذه المنصة لا تجبر أي شخص على الإطلاق على الاشتراك أو دفع الأموال. إن قيامك بالاشتراك وتفعيل أي مستوى مالي هو قرار شخصي نابع من رغبتك ومسؤوليتك الكاملة والمستقلة، ولا تتحمل إدارة التطبيق أي تبعات أو مسؤولية ناتجة عن اختيارك. تسجيل معلوماتك وتفعيل الحساب يتم بأموال حقيقية وعلى مسؤوليتك الشخصية الكاملة بعد قراءة هذا التحذير.
                 </p>
             </div>
 
-            <!-- نموذج تسجيل الحساب المالي والبطاقة الحقيقية -->
+            <!-- نموذج تسجيل الحساب المالي لمحاكاة البيانات -->
             <div id="wallet-registration-box" class="card">
                 <h4 style="margin-top: 0;">تسجيل وتأكيد الحساب المالي الحقيقي</h4>
                 <p style="font-size: 12px; color: #666; margin-bottom: 10px;">
@@ -194,17 +209,39 @@
                 <button class="btn-green" onclick="registerRealCard()">حفظ وتسجيل معلومات البطاقة</button>
             </div>
 
-            <!-- لوحة البيانات المالية وزر سحب الأموال (تظهر بعد التسجيل بنجاح) -->
+            <!-- لوحة البيانات المالية المعدلة حسب الصورة 1000000568.jpg مع إضافة سطر التليجرام الجديد -->
             <div id="me-dashboard-box" class="hidden">
                 <div class="card">
-                    <h4>لوحة الحساب المالي النشط</h4>
-                    <div class="stat-row"><span>نوع البطاقة المسجلة:</span><span id="lbl-card-type" style="font-weight: bold;">-</span></div>
-                    <div class="stat-row"><span>رأس المال المدخل الحقيقي:</span><span id="lbl-deposit-amount" style="font-weight: bold; color: #2ecc71;">0 د.ع</span></div>
-                    <div class="stat-row"><span>محفظة الأرباح الحالية:</span><span id="lbl-earnings" style="font-weight: bold; color: #27ae60;">0 د.ع</span></div>
-                    <div class="stat-row"><span>حالة تفعيل الاشتراك:</span><span id="lbl-sub-status" style="font-weight: bold; color: #e74c3c;">غير مشترك</span></div>
+                    <h3 style="margin-top: 0; font-size: 16px; font-weight: normal; margin-bottom: 20px;">لوحة الحساب المالي النشط</h3>
+                    
+                    <div class="stat-row">
+                        <span>نوع البطاقة المسجلة:</span>
+                        <span id="lbl-card-type" style="font-weight: bold;">-</span>
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span>رأس المال المدخل الحقيقي:</span>
+                        <span id="lbl-deposit-amount" style="font-weight: bold; color: #2ecc71;">0 د.ع</span>
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span>محفظة الأرباح الحالية:</span>
+                        <span id="lbl-earnings" style="font-weight: bold; color: #2ecc71;">0 د.ع</span>
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span>حالة تفعيل الاشتراك:</span>
+                        <span id="lbl-sub-status" style="font-weight: bold; color: #2ecc71;">غير مشترك</span>
+                    </div>
+
+                    <!-- التعديل الجديد المطلوب: إضافة زر الانضمام للمجموعة والرابط على اليسار داخل لوحة الحساب -->
+                    <div class="stat-row" style="border-top: 1px dashed var(--accent-color); margin-top: 5px; padding-top: 15px;">
+                        <span style="font-weight: bold;">الانضمام إلى المجموعة:</span>
+                        <a href="https://t.me/+xJYDf-ZMDoE0MDQy" target="_blank" class="tg-link">https://t.me/+xJYDf-ZMDoE0MDQy</a>
+                    </div>
                 </div>
 
-                <!-- زر سحب الأموال في حال الاشتراك بالغلط مع استقطاع 5% من المبلغ المدخل فقط -->
+                <!-- زر سحب الأموال المدخلة مع استقطاع 5% -->
                 <div class="card" style="border: 1px solid var(--warning-border);">
                     <h4 style="color: #c0392b; margin-top: 0;">سحب الأموال المستثمرة</h4>
                     <p style="font-size: 12px; color: #666;">
@@ -215,7 +252,7 @@
             </div>
         </div>
 
-        <!-- ================= قسم الاشتراكات (يفتح بعد تسجيل البطاقة) ================= -->
+        <!-- ================= قسم الاشتراكات ================= -->
         <div id="sec-main" class="section hidden">
             <div class="card">
                 <h3>مستويات الاشتراك المتاحة</h3>
@@ -241,7 +278,7 @@
             </div>
         </div>
 
-        <!-- ================= قسم قاعة المهام (يفتح بعد اختيار الاشتراك) ================= -->
+        <!-- ================= قسم قاعة المهام ================= -->
         <div id="sec-tasks" class="section hidden">
             <div class="card">
                 <h3 id="task-title" style="margin-top: 0;">شاهد الإعلانات اليومية</h3>
@@ -257,27 +294,21 @@
 
     </div>
 
-    <!-- ================= شريط التنقل السفلي المطور حسب شروطه الدقيقة ================= -->
+    <!-- ================= شريط التنقل السفلي المحدث (بدون زر التليجرام) ================= -->
     <div class="nav-bar">
-        <!-- الزر الأول: الرئيسية (الاشتراكات) - يبدأ مخفياً لحين تسجيل البطاقة البنكية -->
+        <!-- الزر الأول: الرئيسية (الاشتراكات) -->
         <div class="nav-item locked-nav" id="nav-main" onclick="navigateTo('main')">
             <div style="font-size: 20px;">🏠</div>
             <div>الرئيسية</div>
         </div>
         
-        <!-- الزر الثاني: المهام - يبدأ مخفياً لحين اختيار باقة الاشتراك وتفعيلها -->
+        <!-- الزر الثاني: المهام -->
         <div class="nav-item locked-nav" id="nav-tasks" onclick="navigateTo('tasks')">
             <div style="font-size: 20px;">📋</div>
             <div>المهام</div>
         </div>
 
-        <!-- الزر الثالث الجديد والمطلوب: الدخول إلى جروب التليجرام بالإنجليزية ورابطه المباشر -->
-        <a href="https://t.me/+xJYDf-ZMDoE0MDQy" target="_blank" class="nav-item" id="nav-telegram" style="color: #0088cc; font-weight: bold;">
-            <div style="font-size: 20px;">✈️</div>
-            <div>Join Group</div>
-        </a>
-
-        <!-- الزر الافتراضي الذي تفتح عليه المنصة تلقائياً وتكون باينة لوحدها -->
+        <!-- الزر الافتراضي المتاح أولاً عند تشغيل المنصة -->
         <div class="nav-item active" id="nav-me" onclick="navigateTo('me')">
             <div style="font-size: 20px;">👤</div>
             <div>أنا</div>
@@ -285,7 +316,7 @@
     </div>
 
     <script>
-        // المتغيرات البرمجية لإدارة حالة المنصة الحقيقية
+        // المتغيرات البرمجية للمحاكاة والتجربة
         let cardRegistered = false;
         let activeSubscription = false;
         let userCardType = "";
@@ -297,7 +328,6 @@
         let currentAdsDone = 0;
         let profitPerAd = 0;
 
-        // دالة التنقل والتحكم بالأقسام والتبويبات
         function navigateTo(section) {
             if (section === 'main' && !cardRegistered) return;
             if (section === 'tasks' && !activeSubscription) return;
@@ -320,41 +350,37 @@
             }
         }
 
-        // خطوة 1: تسجيل البطاقة البنكية الحقيقية من صفحة (أنا)
         function registerRealCard() {
             let cardNumber = document.getElementById('card-number').value.trim();
             let amount = parseFloat(document.getElementById('deposit-amount').value);
             let type = document.getElementById('card-type').value;
 
             if (cardNumber === "" || isNaN(amount) || amount <= 0) {
-                alert("تنبيه: يرجى إدخال معلومات بطاقتك البنكية الحقيقية والمبلغ الذي قمت بإيداعه للمتابعة!");
+                alert("تنبيه: يرجى إدخال معلومات محاكاة بطاقتك والمبلغ التجريبي للمتابعة!");
                 return;
             }
 
-            // تأكيد التسجيل والربط المالي الحقيقي
             cardRegistered = true;
             userCardType = type;
             realDepositedMoney = amount;
 
-            // تحديث بيانات لوحة التحكم في صفحة "أنا"
+            // تحديث بيانات لوحة التحكم طبقاً للتعديل الجديد
             document.getElementById('lbl-card-type').innerText = userCardType;
             document.getElementById('lbl-deposit-amount').innerText = realDepositedMoney.toLocaleString() + " د.ع";
             
-            // إخفاء كود التسجيل وإظهار لوحة الحساب المالي الفعلي وزر السحب
             document.getElementById('wallet-registration-box').classList.add('hidden');
             document.getElementById('me-dashboard-box').classList.remove('hidden');
 
-            // إظهار وفتح الزر الثاني (الرئيسية / الاشتراكات) في شريط التنقل السفلي تلقائياً
+            // فتح زر الرئيسية تلقائياً بعد الخطوة الأولى
             document.getElementById('nav-main').classList.remove('locked-nav');
 
-            alert(`تم تسجيل بطاقتك البنكية المستندة لـ (${type}) بنجاح. تم فتح قسم الاشتراكات لك الآن بالكامل.`);
-            navigateTo('main'); // توجيه تلقائي لقسم الاشتراكات
+            alert(`تم تسجيل البيانات بنجاح في النموذج المحاكي. تم فتح قسم الاشتراكات.`);
+            navigateTo('main');
         }
 
-        // خطوة 2: اختيار وتفعيل باقة مستوى الاشتراك المالي الحقيقي
         function buySubscriptionLevel(level, price) {
             if (realDepositedMoney < price) {
-                alert(`رأس مالك المودع الحالي (${realDepositedMoney.toLocaleString()} د.ع) غير كافٍ لتفعيل هذا المستوى. يتطلب هذا المستوى إيداع ${price.toLocaleString()} د.ع على الأقل.`);
+                alert(`رأس مالك الحالي في المحاكاة (${realDepositedMoney.toLocaleString()} د.ع) غير كافٍ. يتطلب هذا المستوى ${price.toLocaleString()} د.ع.`);
                 return;
             }
 
@@ -367,26 +393,22 @@
             
             currentAdsDone = 0;
 
-            // تحديث الواجهات والبيانات المالية
             document.getElementById('lbl-sub-status').innerText = `مشترك بالمستوى V${level}`;
-            document.getElementById('lbl-sub-status').style.color = "#2ecc71";
 
-            document.getElementById('task-title').innerText = `إعلانات المستوى النشط V${level}`;
+            document.getElementById('task-title').innerText = `إعلانات المستوى التجريبي V${level}`;
             document.getElementById('ads-left').innerText = maxAds;
             document.getElementById('ads-done').innerText = 0;
             document.getElementById('task-progress').style.width = "0%";
 
-            // إظهار وفتح زر قاعة المهام في شريط التنقل السفلي تلقائياً بعد الاشتراك
             document.getElementById('nav-tasks').classList.remove('locked-nav');
 
-            alert(`تمت عملية الاشتراك وتفعيل المستوى V${level} بنجاح! يمكنك الآن الانتقال لقاعة المهام ومتابعة الإعلانات.`);
-            navigateTo('tasks'); // توجيه تلقائي لقسم المهام
+            alert(`تم محاكاة تفعيل المستوى V${level} بنجاح! تم فتح قاعة المهام.`);
+            navigateTo('tasks');
         }
 
-        // خطوة 3: مشاهدة الإعلانات وتجميع الأرباح
         function simulateWatchingAd() {
             if (currentAdsDone >= maxAds) {
-                alert("لقد أكملت جميع الإعلانات والمهام المتاحة لباقة اشتراكك لهذا اليوم بنجاح!");
+                alert("لقد أكملت جميع الإعلانات الافتراضية المتاحة لهذا اليوم!");
                 return;
             }
 
@@ -394,31 +416,26 @@
             let left = maxAds - currentAdsDone;
             realEarningsMoney += profitPerAd;
 
-            // تحديث العدادات وخط التقدم
             document.getElementById('ads-done').innerText = currentAdsDone;
             document.getElementById('ads-left').innerText = left;
             document.getElementById('task-progress').style.width = (currentAdsDone / maxAds * 100) + "%";
 
-            // تحديث محفظة الأرباح بصفحة "أنا"
             document.getElementById('lbl-earnings').innerText = realEarningsMoney.toFixed(0) + " د.ع";
 
-            alert(`تهانينا! شاهدت الإعلان بنجاح وتمت إضافة أرباح بقيمة ${profitPerAd.toFixed(0)} د.ع إلى محفظتك الحقيقية.`);
+            alert(`شاهدت الإعلان التجريبي وتمت إضافة ${profitPerAd.toFixed(0)} د.ع إلى رصيد أرباح المحاكاة.`);
         }
 
-        // خطوة 4: سحب الأموال المدخلة فقط في حال الاشتراك بالغلط مع قص ونسبة خصم 5%
         function withdrawDepositedFunds() {
             if (realDepositedMoney <= 0) {
-                alert("خطأ: لا يوجد أي رأس مال متاح في حسابك حالياً لتتمكن من سحبه!");
+                alert("خطأ: لا يوجد رصيد حالي متاح في نموذج المحاكاة لتتمكن من سحبه!");
                 return;
             }
 
-            // احتساب رسوم وقص نسبة الـ 5% من المبلغ المودع الأصلي فقط
             let cutAmount = realDepositedMoney * 0.05;
             let netRefund = realDepositedMoney - cutAmount;
 
-            alert(`تم تأكيد طلب السحب لإلغاء الاشتراك الفوري.\n\nالمبلغ الأصلي المودع: ${realDepositedMoney.toLocaleString()} د.ع\nرسوم الخصم والإلغاء (5%): ${cutAmount.toLocaleString()} د.ع\nالمبلغ الصافي الذي سيتم تحويله لمحفظتك: ${netRefund.toLocaleString()} د.ع.\n\nسيتم إرسال المبلغ الصافي لبطاقتك المسجلة قريباً.`);
+            alert(`محاكاة عملية السحب والإلغاء:\n\nالمبلغ الأصلي: ${realDepositedMoney.toLocaleString()} د.ع\nخصم الإلغاء الافتراضي (5%): ${cutAmount.toLocaleString()} د.ع\nالمبلغ الصافي المسترجع: ${netRefund.toLocaleString()} د.ع.`);
             
-            // إعادة النظام المالي لوضعه الأساسي وإعادة قفل الأزرار المتقدمة
             realDepositedMoney = 0;
             realEarningsMoney = 0;
             cardRegistered = false;
