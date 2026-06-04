@@ -1,356 +1,70 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الأرباح التفاعلية</title>
     <style>
-        :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #ffffff;
-            --accent-color: #ff3333;
-            --border-color: #ff3333;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            padding-bottom: 80npx;
+            background-color: black;
+            font-family: Arial, sans-serif;
         }
-
-        .header {
-            background: linear-gradient(180deg, #aa0000 0%, #121212 100%);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 2px solid var(--accent-color);
-        }
-
-        .container {
-            padding: 15px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-
-        .btn-large {
-            background-color: var(--accent-color);
-            color: white;
+        .button {
+            background-color: red;
             border: none;
-            width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.3s;
-        }
-
-        .btn-large:hover {
-            background-color: #cc0000;
-        }
-
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #0a0a0a;
-            border-top: 2px solid var(--accent-color);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            z-index: 1000;
-        }
-
-        .nav-item {
-            color: #888;
-            cursor: pointer;
-            font-size: 14px;
+            color: white;
+            padding: 15px 32px;
             text-align: center;
-            flex: 1;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
         }
-
-        .nav-item.active {
-            color: var(--accent-color);
-            font-weight: bold;
+        .info {
+            color: blue;
+            font-size: 20px;
+            margin-top: 10px;
         }
-
-        .hidden {
-            display: none;
-        }
-
-        .level-box {
-            border-left: 4px solid var(--accent-color);
-            padding-left: 10px;
-            margin-bottom: 10px;
-        }
-
-        .progress-bar-container {
-            background-color: #333;
-            border-radius: 10px;
-            height: 12px;
+        .progress-bar {
             width: 100%;
-            margin-top: 8px;
+            background-color: #f3f3f3;
             overflow: hidden;
         }
-
-        .progress-bar {
-            background-color: var(--accent-color);
-            height: 100%;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #222;
-        }
-
-        .ad-card {
-            display: flex;
-            align-items: center;
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-
-        .ad-icon {
-            width: 50px;
-            height: 50px;
-            background-color: #333;
-            border-radius: 5px;
-            margin-left: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-color);
-            font-size: 20px;
+        .progress-bar div {
+            height: 20px;
+            background-color: green;
+            width: 0;
         }
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <h2 id="page-title">الصفحة الرئيسية</h2>
-    </div>
-
-    <div class="container">
-        
-        <!-- SECTION 1: MAIN (الرئيسية) -->
-        <div id="sec-main" class="section">
-            <div class="card">
-                <h3>أهلاً بك في منصة المهام</h3>
-                <p>اختر مستوى الاشتراك المناسب لك لبدء مشاهدة الإعلانات وجني الأرباح متبادلة المنفعة.</p>
-                
-                <div class="level-box">
-                    <h4>المستوى 1 (10,000 د.ع)</h4>
-                    <p>20 إعلان يومياً | ربح المشاهدة: 1,000 د.ع</p>
-                    <button class="btn-large" onclick="subscribe(1, 10000, 20, 1000)">تفعيل المستوى 1</button>
-                </div>
-                
-                <div class="level-box">
-                    <h4>المستوى 2 (15,000 د.ع)</h4>
-                    <p>25 إعلان يومياً | ربح المشاهدة: 1,500 د.ع</p>
-                    <button class="btn-large" onclick="subscribe(2, 15000, 25, 1500)">تفعيل المستوى 2</button>
-                </div>
-
-                <div class="level-box">
-                    <h4>المستوى 3 (20,000 د.ع)</h4>
-                    <p>30 إعلان يومياً | ربح المشاهدة: 2,000 د.ع</p>
-                    <button class="btn-large" onclick="subscribe(3, 20000, 30, 2000)">تفعيل المستوى 3</button>
-                </div>
-            </div>
+    <h1>تطبيق ربح للطرفين</h1>
+    <div class="button" onclick="showSubscriptionInfo()">ادخل بطاقتك البنكية</div>
+    <div id="subscriptionInfo" style="display:none;">
+        <div class="info">
+            <h2>معلومات الاشتراك</h2>
+            <p>المستوى 1: 10,000 دينار عراقي - 20 اعلان</p>
+            <p>المستوى 2: 15,000 دينار عراقي - 25 اعلان</p>
+            <p>المستوى 3: 20,000 دينار عراقي - 30 اعلان</p>
         </div>
-
-        <!-- SECTION 2: TASKS (المهام) -->
-        <div id="sec-tasks" class="section hidden">
-            <div class="card">
-                <h3 id="current-v">يرجى الاشتراك أولاً لتفعيل المهام</h3>
-                <div id="task-status" class="hidden">
-                    <div class="stat-row">
-                        <span>المتبقي من الإعلانات:</span>
-                        <span id="ads-left">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span>المكتمل:</span>
-                        <span id="ads-done">0</span>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div id="task-progress" class="progress-bar"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="ads-container" class="hidden">
-                <!-- محاكاة الإعلانات -->
-                <div class="ad-card">
-                    <div class="ad-icon">▶</div>
-                    <div style="flex-grow: 1;">
-                        <span style="color: gold; font-weight: bold;" id="ad-reward-text">+0 IQD</span>
-                        <p style="margin: 5px 0 0 0; font-size: 12px; color: #aaa;">شاهد الإعلان للحصول على المكافأة</p>
-                    </div>
-                    <button style="background:#ff3333; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;" onclick="watchAd()">مشاهدة</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION 3: ME (أنا) -->
-        <div id="sec-me" class="section hidden">
-            <!-- محاكاة بوابة آمنة بديلة تطلب كود تفعيل المحفظة المحاكي -->
-            <div id="gate-card" class="card" style="text-align: center;">
-                <p>اضغط أدناه لربط حسابك وتنشيط لوحة البيانات المالية</p>
-                <button class="btn-large" onclick="unlockDashboard()">تنشيط لوحة الحساب</button>
-            </div>
-
-            <!-- لوحة المعلومات الحسابية (تظهر بعد الضغط) -->
-            <div id="dashboard-card" class="hidden">
-                <div class="card">
-                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                        <div style="width: 50px; height: 50px; background: #333; border-radius: 50%; border: 2px solid red; display:flex; align-items:center; justify-content:center; font-weight:bold; margin-left: 10px;">User</div>
-                        <div>
-                            <h4 style="margin: 0;">المشترك الافتراضي</h4>
-                            <span style="font-size: 12px; color: gold;" id="user-level-status">غير مشترك</span>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span>محفظة العملة:</span>
-                        <span style="color: #ff3333; font-weight: bold;" id="wallet-balance">0.00 IQD</span>
-                    </div>
-                    <div class="stat-row">
-                        <span>دخل اليوم:</span>
-                        <span id="today-income">0.00 IQD</span>
-                    </div>
-                    <div class="stat-row">
-                        <span>إجمالي الدخل:</span>
-                        <span id="total-income">0.00 IQD</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- شريط التنقل السفلي المكون من 3 أزرار فقط -->
-    <div class="nav-bar">
-        <div class="nav-item active" id="btn-main" onclick="switchSection('main')">
-            <div>🏠</div>
-            <div>الرئيسية</div>
-        </div>
-        <div class="nav-item" id="btn-tasks" onclick="switchSection('tasks')">
-            <div>📋</div>
-            <div>المهام</div>
-        </div>
-        <div class="nav-item" id="btn-me" onclick="switchSection('me')">
-            <div>👤</div>
-            <div>أنا</div>
+        <div class="progress-bar">
+            <div id="progressBar"></div>
         </div>
     </div>
-
     <script>
-        // المتغيرات البرمجية للمنصة
-        let currentLevel = 0;
-        let adsTotal = 0;
-        let adsCompleted = 0;
-        let rewardPerAd = 0;
-        let wallet = 0;
-        let todayIncome = 0;
-        let isDashboardUnlocked = false;
-
-        function switchSection(sec) {
-            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
-            if(sec === 'main') {
-                document.getElementById('sec-main').classList.remove('hidden');
-                document.getElementById('btn-main').classList.add('active');
-                document.getElementById('page-title').innerText = 'الرئيسية';
-            } else if(sec === 'tasks') {
-                document.getElementById('sec-tasks').classList.remove('hidden');
-                document.getElementById('btn-tasks').classList.add('active');
-                document.getElementById('page-title').innerText = 'قاعة المهام';
-            } else if(sec === 'me') {
-                document.getElementById('sec-me').classList.remove('hidden');
-                document.getElementById('btn-me').classList.add('active');
-                document.getElementById('page-title').innerText = 'أنا';
-            }
+        function showSubscriptionInfo() {
+            document.getElementById('subscriptionInfo').style.display = 'block';
         }
-
-        function subscribe(level, price, ads, reward) {
-            currentLevel = level;
-            adsTotal = ads;
-            adsCompleted = 0;
-            rewardPerAd = reward / ads; // تقسيم المكافأة الكلية على عدد الإعلانات
-            
-            alert(`تم الاشتراك بنجاح في المستوى ${level}! اذهب لصفحة المهام لبدء العمل.`);
-            
-            // تحديث واجهة المهام
-            document.getElementById('current-v').innerText = `المستوى الحالي: V${level}`;
-            document.getElementById('task-status').classList.remove('hidden');
-            document.getElementById('ads-left').innerText = adsTotal;
-            document.getElementById('ads-done').innerText = 0;
-            document.getElementById('task-progress').style.width = '0%';
-            document.getElementById('ads-container').classList.remove('hidden');
-            document.getElementById('ad-reward-text').innerText = `+${rewardPerAd.toFixed(2)} IQD`;
-            
-            // تحديث واجهة الحساب
-            document.getElementById('user-level-status').innerText = `المستوى ${level}`;
-        }
-
-        function watchAd() {
-            if (currentLevel === 0) {
-                alert('الرجاء الاشتراك في مستوى أولاً من الصفحة الرئيسية!');
-                return;
+        function updateProgressBar(amount, level) {
+            const progressBar = document.getElementById('progressBar');
+            let width = 0;
+            if (level === 1) {
+                width = (amount * 100) / 10000;
+            } else if (level === 2) {
+                width = (amount * 100) / 15000;
+            } else if (level === 3) {
+                width = (amount * 100) / 20000;
             }
-            if (adsCompleted >= adsTotal) {
-                alert('لقد أكملت جميع مهام اليوم لهذا المستوى!');
-                return;
-            }
-
-            adsCompleted++;
-            let left = adsTotal - adsCompleted;
-            
-            // تحديث أرقام المهام والخط
-            document.getElementById('ads-done').innerText = adsCompleted;
-            document.getElementById('ads-left').innerText = left;
-            let progressPercent = (adsCompleted / adsTotal) * 100;
-            document.getElementById('task-progress').style.width = `${progressPercent}%`;
-
-            // زيادة الحسابات المالية
-            wallet += rewardPerAd;
-            todayIncome += rewardPerAd;
-
-            // تحديث نصوص المحفظة
-            document.getElementById('wallet-balance').innerText = `${wallet.toFixed(2)} IQD`;
-            document.getElementById('today-income').innerText = `${todayIncome.toFixed(2)} IQD`;
-            document.getElementById('total-income').innerText = `${wallet.toFixed(2)} IQD`;
-
-            alert(`أحسنت! شاهدت الإعلان وتمت إضافة ${rewardPerAd.toFixed(2)} د.ع إلى محفظتك.`);
-        }
-
-        function unlockDashboard() {
-            isDashboardUnlocked = true;
-            document.getElementById('gate-card').classList.add('hidden');
-            document.getElementById('dashboard-card').classList.remove('hidden');
+            progressBar.style.width = width + '%';
         }
     </script>
 </body>
 </html>
-
