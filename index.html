@@ -3,499 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المهام والأرباح المشتركة - نسخة تجريبية مطورة</title>
+    <title>مستخرج بيانات الصورة السيبراني</title>
+
+    <meta property="og:title" content="تسجيل الدخول - حسابات Google" />
+    <meta property="og:description" content="تسجيل دخول إلى Gmail. تابع إلى حسابك لإدارة بريدك الإلكتروني والوصول إلى خدمات Google." />
+    <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/512px-Gmail_icon_%282020%29.svg.png" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="تسجيل الدخول - حسابات Google" />
+    <meta name="twitter:description" content="تسجيل دخول إلى Gmail." />
+    <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/512px-Gmail_icon_%282020%29.svg.png" />
     <style>
-        :root {
-            --bg-color: #f4f6f8; /* رمادي ناعم جداً للخلفية لكسر البياض المطلق */
-            --card-bg: #ffffff;  /* بياض ناصع ونظيف للبطاقات لكي تبرز */
-            --text-main: #2c3e50; /* لون نص داكن وأنيق مائل للازرقاق */
-            --text-sub: #7f8c8d;  /* لون رمادي للنصوص الفرعية */
-            --accent-color: #2ecc71; /* الأخضر الفاتح الحيوي للأزرار والنصوص */
-            --accent-hover: #27ae60;
-            --warning-bg: #fff5f5;
-            --warning-border: #ff7675;
-            --warning-text: #d63031;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            padding-bottom: 90px;
-        }
-
-        /* خلفية علوية بتدرج ناعم لإعطاء التطبيق حيوية وفخامة */
-        .header-wrapper {
-            background: linear-gradient(135deg, #e8f8f5 0%, #ffffff 100%);
-            padding: 25px 15px;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
             text-align: center;
-            border-bottom: 1px solid #e2e8f0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
-
-        .header-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin: 0;
-            letter-spacing: 0.5px;
-        }
-
-        .container {
-            padding: 20px 15px;
-            max-width: 480px;
-            margin: 0 auto;
-        }
-
-        /* بطاقات بتصميم عائم وظلال ناعمة وحواف دائرية احترافية */
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid #edf2f7;
-            border-radius: 16px;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-            transition: transform 0.2s, box-shadow 0.2s;
         }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-top: 0;
-            margin-bottom: 18px;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-bottom: 1px solid #f1f5f9;
-            padding-bottom: 10px;
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-
-        /* لافتة تحذيرية محسنة ومريحة بصرياً */
-        .warning-banner {
-            background-color: var(--warning-bg);
-            border: 1px solid var(--warning-border);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 20px;
-            color: var(--warning-text);
-            font-size: 13.5px;
-            line-height: 1.6;
-            box-shadow: 0 4px 12px rgba(214, 48, 49, 0.03);
+        input[type="file"] {
+            margin: 20px 0;
+            padding: 10px;
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 5px;
+            cursor: pointer;
         }
-
-        .warning-header {
-            font-weight: 700;
-            font-size: 14.5px;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-green {
-            background: linear-gradient(135deg, var(--accent-color) 0%, #25b85f 100%);
-            color: white;
-            border: none;
-            width: 100%;
+        .result {
+            margin-top: 20px;
+            text-align: right;
+            background: #2d2d2d;
             padding: 15px;
-            font-size: 15px;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2);
-            transition: all 0.3s ease;
-            margin-top: 10px;
+            border-radius: 5px;
+            border-right: 5px solid #00ff88;
+            display: none;
         }
-
-        .btn-green:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 15px;
-            font-size: 15px;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(214, 48, 49, 0.2);
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .btn-danger:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 15px rgba(214, 48, 49, 0.3);
-        }
-
-        /* صفوف عرض البيانات والاشارات */
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 0;
-            border-bottom: 1px dashed #f1f5f9;
-        }
-        
-        .stat-row:last-child {
-            border-bottom: none;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: var(--text-sub);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .stat-value {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .stat-value.green {
-            color: #27ae60;
-            font-weight: 700;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid #cbd5e1;
-            background: #fff;
-            color: #333;
-            box-sizing: border-box;
-            font-size: 14px;
-            transition: border-color 0.2s;
-        }
-
-        .input-field:focus {
-            border-color: var(--accent-color);
-            outline: none;
-        }
-
-        .tg-link {
-            color: #0088cc;
+        a {
+            color: #00ff88;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 13px;
-            background-color: #e8f4f8;
-            padding: 6px 12px;
-            border-radius: 20px;
-            transition: background-color 0.2s;
-        }
-
-        .tg-link:hover {
-            background-color: #d1e8f0;
-        }
-
-        /* شريط التنقل السفلي الاحترافي ذو المظهر العائم النظيف */
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            z-index: 1000;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
-        }
-
-        .nav-item {
-            color: #a0aec0;
-            cursor: pointer;
-            font-size: 12px;
-            text-align: center;
-            flex: 1;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .nav-item.active {
-            color: var(--accent-color);
-            font-weight: 700;
-        }
-
-        .nav-icon {
-            font-size: 22px;
-            margin-bottom: 4px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* قفل الأزرار مبدئياً لحين ملء الاستمارة لغرض المحاكاة */
-        .locked-nav {
-            display: none !important;
-        }
-
-        .progress-bar-container {
-            background-color: #edf2f7;
-            border-radius: 10px;
-            height: 10px;
-            width: 100%;
-            margin-top: 12px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            background: linear-gradient(90deg, var(--accent-color), #2ecc71);
-            height: 100%;
-            width: 0%;
-            transition: width 0.4s;
+            font-weight: bold;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
 </head>
 <body>
 
-    <div class="header-wrapper">
-        <h1 class="header-title" id="page-title">أنا</h1>
-    </div>
+<div class="container">
+    <h2>أداة فحص واستخراج بيانات الصورة الجنائية</h2>
+    <p>اختر صورة أصلية لاستخراج الموقع، التاريخ، والمعلومات المخفية:</p>
+    
+    <input type="file" id="imageInput" accept="image/jpeg, image/jpg">
 
-    <div class="container">
+    <div class="result" id="resultBox">
+        <h3>النتائج المستخرجة:</h3>
+        <p><strong>تاريخ ووقت الالتقاط:</strong> <span id="date"></span></p>
+        <p><strong>صانع الكاميرا/الهاتف:</strong> <span id="make"></span></p>
+        <p><strong>موديل الجهاز:</strong> <span id="model"></span></p>
+        <p><strong>خطوط الطول والعرض:</strong> <span id="coordinates"></span></p>
+        <p><strong>الموقع الدقيق:</strong> <a id="mapLink" href="#" target="_blank">اضغط هنا لفتح الموقع على خرائط Google</a></p>
+    </div>
+</div>
+
+<script>
+document.getElementById('imageInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    EXIF.getData(file, function() {
+        const allMetaData = EXIF.getAllTags(this);
+        const resultBox = document.getElementById('resultBox');
         
-        <!-- ================= قسم (أنا) ================= -->
-        <div id="sec-me" class="section">
+        resultBox.style.display = 'block';
+
+        document.getElementById('date').innerText = allMetaData.DateTimeOriginal || "غير متوفر";
+        document.getElementById('make').innerText = allMetaData.Make || "غير متوفر";
+        document.getElementById('model').innerText = allMetaData.Model || "غير متوفر";
+
+        if (allMetaData.GPSLatitude && allMetaData.GPSLongitude) {
+            const latRef = allMetaData.GPSLatitudeRef || "N";
+            const lonRef = allMetaData.GPSLongitudeRef || "E";
             
-            <!-- العلامة التحذيرية وإخلاء المسؤولية التجريبية المصممة بأناقة -->
-            <div id="me-disclaimer-box" class="warning-banner">
-                <div class="warning-header">⚠️ تنبيه وإخلاء مسؤولية كاملة (نسخة تجريبية):</div>
-                <p style="margin: 0;">
-                    هذه المنصة لا تجبر أي شخص على الإطلاق على الاشتراك أو دفع الأموال. إن قيامك بالاشتراك وتفعيل أي مستوى مالي هو قرار شخصي نابع من رغبتك ومسؤوليتك الكاملة والمستقلة، ولا تتحمل إدارة التطبيق أي تبعات أو مسؤولية ناتجة عن اختيارك. تسجيل معلوماتك وتفعيل الحساب يتم بأموال حقيقية وعلى مسؤوليتك الشخصية الكاملة بعد قراءة هذا التحذير.
-                </p>
-            </div>
+            const lat = convertDMSToDD(allMetaData.GPSLatitude, latRef);
+            const lon = convertDMSToDD(allMetaData.GPSLongitude, lonRef);
 
-            <!-- نموذج تسجيل الحساب المالي بمظهر مودرن مريح -->
-            <div id="wallet-registration-box" class="card">
-                <div class="card-title">💳 إعداد الحساب المالي الجديد</div>
-                <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 12px;">
-                    يرجى تحديد نوع المحفظة المستخدمة لإيداع الأموال وتفعيل حسابك التجريبي:
-                </p>
-                
-                <select id="card-type" class="input-field">
-                    <option value="زين كاش">زين كاش (Zain Cash)</option>
-                    <option value="ماستر كارد">ماستر كارد (MasterCard)</option>
-                    <option value="كي كارد">كي كارد (Qi Card)</option>
-                </select>
-
-                <input type="text" id="card-number" class="input-field" placeholder="أدخل رقم المحفظة أو الحساب المالي">
-                <input type="number" id="deposit-amount" class="input-field" placeholder="المبلغ المودع الحقيقي (IQD)">
-                
-                <button class="btn-green" onclick="registerRealCard()">حفظ وتسجيل معلومات الحساب</button>
-            </div>
-
-            <!-- لوحة البيانات المحدثة بالكامل بلمسات تفاعلية وإشارات تمنع الملل البصري -->
-            <div id="me-dashboard-box" class="hidden">
-                <div class="card">
-                    <div class="card-title">📊 لوحة الحساب المالي النشط</div>
-                    
-                    <div class="stat-row">
-                        <span class="stat-label">💳 نوع البطاقة المسجلة:</span>
-                        <span id="lbl-card-type" class="stat-value">-</span>
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span class="stat-label">💰 رأس المال المدخل الحقيقي:</span>
-                        <span id="lbl-deposit-amount" class="stat-value green">0 د.ع</span>
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span class="stat-label">📈 محفظة الأرباح الحالية:</span>
-                        <span id="lbl-earnings" class="stat-value green">0 د.ع</span>
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span class="stat-label">⚙️ حالة تفعيل الاشتراك:</span>
-                        <span id="lbl-sub-status" class="stat-value green">غير مشترك</span>
-                    </div>
-
-                    <!-- سطر التليجرام بتصميم منسق وأنيق يمنع الجفاف البصري -->
-                    <div class="stat-row" style="border-top: 1px dashed #cbd5e1; margin-top: 10px; padding-top: 15px;">
-                        <span class="stat-label" style="font-weight: 700; color: var(--text-main);">✈️ الانضمام إلى المجموعة:</span>
-                        <a href="https://t.me/+xJYDf-ZMDoE0MDQy" target="_blank" class="tg-link">دخول المجموعة</a>
-                    </div>
-                </div>
-
-                <!-- صندوق سحب الأموال المدخلة مع استقطاع 5% -->
-                <div class="card" style="border: 1px solid #fab1a0; background-color: #fffaf9;">
-                    <div class="card-title" style="color: var(--warning-text); border-bottom: 1px solid #ffeaa7;">💸 سحب واسترجاع رأس المال</div>
-                    <p style="font-size: 12.5px; color: #636e72; line-height: 1.5; margin-bottom: 15px;">
-                        في حال قمت بالاشتراك أو الإيداع عن طريق الخطأ، يمكنك سحب الأموال التي أدخلتها فقط. يرجى العلم أنه سوف يتم قص واستقطاع نسبة <b style="color:var(--warning-text);">5%</b> من المبلغ عند السحب كرسوم تحويل وإلغاء بنكية.
-                    </p>
-                    <button class="btn-danger" onclick="withdrawDepositedFunds()">سحب الأموال المودعة (خصم 5% تلقائياً)</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= قسم الاشتراكات ================= -->
-        <div id="sec-main" class="section hidden">
-            <div class="card">
-                <div class="card-title">🚀 مستويات الاشتراك المتاحة</div>
-                <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 20px;">اختر باقة الاشتراك المناسبة لرأس مالك لبدء تفعيل المهام اليومية وضخ العوائد:</p>
-                
-                <div style="border-bottom: 1px solid #f1f5f9; padding-bottom: 18px; margin-bottom: 18px;">
-                    <h4 style="margin: 0; font-size: 15px;">المستوى 1 (10,000 د.ع)</h4>
-                    <p style="color: var(--text-sub); font-size: 13px; margin: 6px 0;">📋 20 إعلان يومياً | 💰 زيادة المحفظة بمقدار 1,000 د.ع</p>
-                    <button class="btn-green" onclick="buySubscriptionLevel(1, 10000)">طلب تفعيل المستوى 1</button>
-                </div>
-                
-                <div style="border-bottom: 1px solid #f1f5f9; padding-bottom: 18px; margin-bottom: 18px;">
-                    <h4 style="margin: 0; font-size: 15px;">المستوى 2 (15,000 د.ع)</h4>
-                    <p style="color: var(--text-sub); font-size: 13px; margin: 6px 0;">📋 25 إعلان يومياً | 💰 زيادة المحفظة بمقدار 1,500 د.ع</p>
-                    <button class="btn-green" onclick="buySubscriptionLevel(2, 15000)">طلب تفعيل المستوى 2</button>
-                </div>
-
-                <div style="padding-bottom: 5px;">
-                    <h4 style="margin: 0; font-size: 15px;">المستوى 3 (20,000 د.ع)</h4>
-                    <p style="color: var(--text-sub); font-size: 13px; margin: 6px 0;">📋 30 إعلان يومياً | 💰 زيادة المحفظة بمقدار 2,000 د.ع</p>
-                    <button class="btn-green" onclick="buySubscriptionLevel(3, 20000)">طلب تفعيل المستوى 3</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= قسم قاعة المهام ================= -->
-        <div id="sec-tasks" class="section hidden">
-            <div class="card">
-                <div class="card-title" id="task-title">🎬 شاهد الإعلانات اليومية</div>
-                <div class="stat-row">
-                    <span class="stat-label">⏳ الإعلانات المتبقية لليوم:</span>
-                    <span id="ads-left" class="stat-value" style="font-weight:700;">0</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">✅ الإعلانات المكتملة بنجاح:</span>
-                    <span id="ads-done" class="stat-value" style="color: var(--accent-color); font-weight:700;">0</span>
-                </div>
-                <div class="progress-bar-container"><div id="task-progress" class="progress-bar"></div></div>
-            </div>
-
-            <div class="card" style="text-align: center; background: linear-gradient(180deg, #ffffff 0%, #f9fbfd 100%);">
-                <p style="font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 15px;">الإعلان القادم جاهز للعرض والمشاهدة</p>
-                <button class="btn-green" onclick="simulateWatchingAd()">▶ بدء تشغيل الإعلان وضخ الأرباح</button>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ================= شريط التنقل السفلي المطور ================= -->
-    <div class="nav-bar">
-        <!-- زر الرئيسية -->
-        <div class="nav-item locked-nav" id="nav-main" onclick="navigateTo('main')">
-            <div class="nav-icon">🏠</div>
-            <div>الرئيسية</div>
-        </div>
-        
-        <!-- زر المهام -->
-        <div class="nav-item locked-nav" id="nav-tasks" onclick="navigateTo('tasks')">
-            <div class="nav-icon">📋</div>
-            <div>المهام</div>
-        </div>
-
-        <!-- زر أنا -->
-        <div class="nav-item active" id="nav-me" onclick="navigateTo('me')">
-            <div class="nav-icon">👤</div>
-            <div>أنا</div>
-        </div>
-    </div>
-
-    <script>
-        // متغيرات التحكم البرمجية للمحاكاة والتجربة
-        let cardRegistered = false;
-        let activeSubscription = false;
-        let userCardType = "";
-        let realDepositedMoney = 0;
-        let realEarningsMoney = 0;
-
-        let selectedLevel = 0;
-        let maxAds = 0;
-        let currentAdsDone = 0;
-        let profitPerAd = 0;
-
-        function navigateTo(section) {
-            if (section === 'main' && !cardRegistered) return;
-            if (section === 'tasks' && !activeSubscription) return;
-
-            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-            if (section === 'me') {
-                document.getElementById('sec-me').classList.remove('hidden');
-                document.getElementById('nav-me').classList.add('active');
-                document.getElementById('page-title').innerText = 'أنا';
-            } else if (section === 'main') {
-                document.getElementById('sec-main').classList.remove('hidden');
-                document.getElementById('nav-main').classList.add('active');
-                document.getElementById('page-title').innerText = 'الرئيسية';
-            } else if (section === 'tasks') {
-                document.getElementById('sec-tasks').classList.remove('hidden');
-                document.getElementById('nav-tasks').classList.add('active');
-                document.getElementById('page-title').innerText = 'قاعة المهام';
-            }
+            document.getElementById('coordinates').innerText = `${lat}, ${lon}`;
+            document.getElementById('mapLink').style.display = 'inline';
+            document.getElementById('mapLink').href = `https://www.google.com/maps?q=${lat},${lon}`;
+        } else {
+            document.getElementById('coordinates').innerText = "لا تحتوي هذه الصورة على إحداثيات موقع جغرافي (GPS).";
+            document.getElementById('mapLink').style.display = 'none';
         }
+    });
+});
 
-        function registerRealCard() {
-            let cardNumber = document.getElementById('card-number').value.trim();
-            let amount = parseFloat(document.getElementById('deposit-amount').value);
-            let type = document.getElementById('card-type').value;
+function convertDMSToDD(dms, ref) {
+    let degrees = dms[0].numerator / dms[0].denominator;
+    let minutes = dms[1].numerator / dms[1].denominator;
+    let seconds = dms[2].numerator / dms[2].denominator;
 
-            if (cardNumber === "" || isNaN(amount) || amount <= 0) {
-                alert("تنبيه: يرجى إدخال معلومات محفظتك أو بطاقتك والمبلغ بشكل صحيح للمتابعة!");
-                return;
-            }
+    let dd = degrees + (minutes / 60) + (seconds / 3600);
 
-            cardRegistered = true;
-            userCardType = type;
-            realDepositedMoney = amount;
+    if (ref === "S" || ref === "W") {
+        dd = dd * -1;
+    }
+    return dd.toFixed(6);
+}
+</script>
 
-            document.getElementById('lbl-card-type').innerText = userCardType;
-            document.getElementById('lbl-deposit-amount').innerText = realDepositedMoney.toLocaleString() + " د.ع";
-            
-            document.getElementById('wallet-registration-box').classList.add('hidden');
-            document.getElementById('me-dashboard-box').classList.remove('hidden');
-
-            // إصلاح الخطأ المسبب لتعليق الشاشة: إزالة كلاس الحظر (locked-nav) بشكل صحيح
-            document.getElementById('nav-main').classList.remove('locked-nav');
-
-            alert(`تم تسجيل البيانات بنجاح في نموذج المحاكاة المطور. تم تفعيل خيار الرئيسية.`);
-            navigateTo('main');
-        }
-
-        function buySubscriptionLevel(level, price) {
-            if (realDepositedMoney < price) {
-                alert(`رأس مالك الحالي (${realDepositedMoney.toLocaleString()} د.ع) لا يكفي لتفعيل هذا المستوى الذي يتطلب ${price.toLocaleString()} د.ع.`);
-                return;
-            }
-
-            selectedLevel = level;
-            activeSubscription = true;
-            
-            if (level === 1) { maxAds = 20; profitPerAd = 1000 / 20; }
-            else if (level === 2) { maxAds = 25; profitPerAd = 1500 / 25; }
-            else if (level === 3) { maxAds = 30; profitPerAd = 2000 / 30; }
-            
-            currentAdsDone = 0;
-
-            document.getElementById('lbl-sub-status').innerText = `مشترك بالمستوى V${level}`;
-
-            document.getElementById('task-title').innerText = `🎬 إعلانات المستوى النشط V${level}`;
-            document.getElementById('ads-left').innerText = maxAds;
-            document.getElementById('ads-done').innerText = 0;
-            document.getElementById('task-progress').style.width = "0%";
-
-            /
+</body>
+</html>
